@@ -79,7 +79,7 @@ class DataSource {
     }
     subject = ReplaySubject<CandleData>();
 
-    var symbol = "eth_usdt";
+    var symbol = "del_usdt";
 
     channel = IOWebSocketChannel.connect(
         "wss://market-api.rbtc.io/sub");
@@ -88,7 +88,7 @@ class DataSource {
     channel.sink.add(
         '{"method":"pull_user_market","data":{"market":"${symbol}"}}');
     channel.sink.add(
-        '{"method":"pull_kline_graph","data":{"market":"${symbol}","k_line_type":"${minute}","k_line_count":"500"}}');
+        '{"method":"pull_kline_graph","data":{"market":"${symbol}","k_line_type":"${minute}","k_line_count":"80"}}');
 
     channel.stream.listen((request) {
       var msg = json.decode(utf8.decode(request));
@@ -110,6 +110,9 @@ class DataSource {
           }
 
           dataK.add(d);
+          if(dataK.length >= 2) {
+//            print(dataK.last['time'] - dataK[dataK.length - 2]['time']);
+          }
           subject.sink.add(CandleData.fromArray(item));
         });
 //        kChartsKey.currentState.data = data;

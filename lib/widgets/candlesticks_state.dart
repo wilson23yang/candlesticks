@@ -288,7 +288,7 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
     // TODO: implement initState
     super.initState(); //插入监听器
     firstCandleData = null;
-    durationMs = null;
+    durationMs = widget.durationMs;
     exdataStreamController = new StreamController<ExtCandleData>();
     exdataStream = exdataStreamController.stream.asBroadcastStream();
     subscription = widget.dataStream.listen(onCandleData);

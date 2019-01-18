@@ -10,8 +10,10 @@ class CandlesticksWidget extends StatefulWidget {
         Key key,
         this.dataStream,
         this.candlesticksStyle,
+        this.durationMs,
     }) :super(key: key);
 
+    final double durationMs;
     final Stream<CandleData> dataStream;
     final CandlesticksStyle candlesticksStyle;
 

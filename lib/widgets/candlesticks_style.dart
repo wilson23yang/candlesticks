@@ -84,6 +84,7 @@ class CandlesticksStyle {
   final int maxViewPortX;
   final Color backgroundColor;
   final Color lineColor;
+  final double durationMs;//k线时间间隔
   //标线
   final int fractionDigits;
   final double paddingY;
@@ -96,5 +97,5 @@ class CandlesticksStyle {
 
   CandlesticksStyle(
       {this.minViewPortX, this.maxViewPortX, this.floatingStyle, this.lineColor, this.candlesStyle, this.maStyle, this.cameraDuration, this.initAfterNData, this.backgroundColor, this.defaultViewPortX,
-        this.fractionDigits, this.paddingY, this.nX, this.nY});
+        this.fractionDigits, this.paddingY, this.nX, this.nY, this.durationMs});
 }

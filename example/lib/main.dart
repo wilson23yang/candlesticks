@@ -22,7 +22,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    dataStreamFuture = DataSource.instance.initTZB(1);
+    dataStreamFuture = DataSource.instance.initRBTC(1440);
     style = DefaultCandleStyle;
   }
 
@@ -77,6 +77,7 @@ class _MyAppState extends State<MyApp> {
                     return Container();
                   }
                   return CandlesticksWidget(
+                    durationMs: 86400000,
                     dataStream: snapshot.data,
                     candlesticksStyle:style,
                   );
