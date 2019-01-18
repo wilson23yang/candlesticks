@@ -79,7 +79,7 @@ class DataSource {
     }
     subject = ReplaySubject<CandleData>();
 
-    var symbol = "del_usdt";
+    var symbol = "del_pyc";
 
     channel = IOWebSocketChannel.connect(
         "wss://market-api.rbtc.io/sub");

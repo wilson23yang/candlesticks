@@ -35,6 +35,20 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
   }
 
   _onCandleData(CandleData candleData) {
+    if (candleDataList.length > 0) {
+      if (candleData.timeMs - candleDataList.last.timeMs > this.durationMs) {
+        CandleData t = CandleData(
+          timeMs: (candleData.timeMs - this.durationMs).toInt(),
+          open: candleDataList.last.close,
+          close: candleDataList.last.close,
+          high: candleDataList.last.close,
+          low: candleDataList.last.close,
+          volume: 0
+        );
+        _onCandleData(t);
+      }
+    }
+
     var first = false;
     if ((candlesX.length <= 0) || (candleData.timeMs > candlesX.last)) {
       candlesX.add(candleData.timeMs.toDouble());
@@ -109,7 +123,7 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
     var width = currentRangeX.width;
     double a = width * 5;
     var viewPortDx = details.primaryVelocity.abs() / context.size.width;
-    if(viewPortDx ~/durationMs > 2) {
+    if (viewPortDx ~/ durationMs > 2) {
       viewPortDx = 2;
     }
     var worldDx = width * viewPortDx;
@@ -248,12 +262,13 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
     var currentRangeX = uiCameraAnimation.value;
     touchPoint = getBox.globalToLocal(details.globalPosition);
 
-    var worldX = currentRangeX.minX + (touchPoint.dx / context.size.width) * currentRangeX.width;
+    var worldX = currentRangeX.minX +
+        (touchPoint.dx / context.size.width) * currentRangeX.width;
     var extDataIndex = (worldX - candlesX.first) ~/ durationMs;
-    if(extDataIndex < 0) {
+    if (extDataIndex < 0) {
       return;
     }
-    if(extDataIndex >= this.candleDataList.length) {
+    if (extDataIndex >= this.candleDataList.length) {
       return;
     }
     extCandleData = candleDataList[extDataIndex];
@@ -269,12 +284,13 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
 
   onLongPress() {
     var currentRangeX = uiCameraAnimation.value;
-    var worldX = currentRangeX.minX + (touchPoint.dx / context.size.width) * currentRangeX.width;
+    var worldX = currentRangeX.minX +
+        (touchPoint.dx / context.size.width) * currentRangeX.width;
     var extDataIndex = (worldX - candlesX.first) ~/ durationMs;
-    if(extDataIndex < 0) {
+    if (extDataIndex < 0) {
       return;
     }
-    if(extDataIndex >= this.candleDataList.length) {
+    if (extDataIndex >= this.candleDataList.length) {
       return;
     }
     extCandleData = candleDataList[extDataIndex];
