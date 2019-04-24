@@ -31,9 +31,9 @@ class CandlesticksView extends CandlesticksState {
       onHorizontalDragStart: (x) {
         touching = true;
       },
-      onVerticalDragCancel: () {
-        touching = false;
-      },
+//      onVerticalDragCancel: () {
+//        touching = false;
+//      },
       onHorizontalDragEnd: onHorizontalDragEnd,
       onHorizontalDragUpdate: onHorizontalDragUpdate,
 

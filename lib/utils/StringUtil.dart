@@ -2,12 +2,16 @@
 class StringUtil{
 
   static String trimZero(String count, int precision) {
-    while (count.contains('.') &&
-        count.endsWith('0') &&
-        count.substring(count.lastIndexOf('.')).length > precision + 1) {
-      count = count.substring(0, count.length - 1);
+    try{
+      while (count.contains('.') &&
+          count.endsWith('0') &&
+          count.substring(count.lastIndexOf('.')).length > precision + 1) {
+        count = count.substring(0, count.length - 1);
+      }
+      return count;
+    }catch(e){
+      return count;
     }
-    return count;
   }
 
   /// 转换资产换算，保留precision位小数
@@ -54,20 +58,24 @@ class StringUtil{
   }
 
   ///提取小数精度
-  static int getPrecision(var num){
-    num = StringUtil.trimZero(num, 2);
-    int precision = 4;
-    if(num is double || num is String){
-      String str = num.toString();
-      if(str.contains('.')){
-        int p = str.length - str.indexOf('.') - 1;
-        if(p < 4){
-          p = precision;
+  static int getPrecision(var num,{int defaultPrecision = 2}){
+    try{
+      String numStr = StringUtil.trimZero(num.toString(), defaultPrecision);
+      int precision = defaultPrecision;
+      if(numStr is String){
+        String str = numStr;
+        if(str.contains('.')){
+          int p = str.length - str.indexOf('.') - 1;
+          if(p < 4){
+            p = precision;
+          }
+          precision = p;
         }
-        precision = p;
       }
+      return precision;
+    }catch(e){
+      return defaultPrecision;
     }
-    return precision;
   }
 
 }

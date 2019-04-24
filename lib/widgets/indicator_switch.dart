@@ -1,7 +1,7 @@
 
 class IndicatorSwitch{
 
-  bool mainSwitch = false;
+  bool mainSwitch = true;
   bool subSwitch = false;
 
   bool maSwitch = false;

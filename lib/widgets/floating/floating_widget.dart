@@ -1,3 +1,5 @@
+import 'package:candlesticks/utils/DateUtil.dart';
+import 'package:candlesticks/utils/StringUtil.dart';
 import 'package:flutter/material.dart';
 
 import 'package:candlesticks/2d/candle_data.dart';
@@ -13,12 +15,14 @@ class TopFloatingPainter extends CustomPainter {
   final UICamera uiCamera;
   final Offset touchPoint;
   final CandlesticksStyle style;
+  final double durationMs;
 
   TopFloatingPainter({
     this.uiCamera,
     this.extCandleData,
     this.touchPoint,
     this.style,
+    this.durationMs,
   });
 
 
@@ -60,34 +64,42 @@ class TopFloatingPainter extends CustomPainter {
         .viewPortToScreenPoint(size, uiCamera.worldToViewPortPoint(
         UIOPoint(extCandleData.timeMs.toDouble(), 0)))
         .dx;
-    double width = size.width / 2.8;
+    double width = size.width / 3.5;
     if (width < style.floatingStyle.minWidth) {
       width = style.floatingStyle.minWidth;
     }
     var leftTop = Offset(0, 20);
     if (sceneX < size.width / 2) {
-      leftTop = Offset(0, 20);
-    } else {
       leftTop = Offset(size.width - width, 20);
+    } else {
+      leftTop = Offset(0, 20);
     }
 
     var time = new DateTime.fromMillisecondsSinceEpoch(extCandleData.timeMs);
     var timeStamp = time.toLocal().toString();
+    if(durationMs >= 1000 * 60 * 60 * 24){//天
+      timeStamp = DateUtil.toYMD(extCandleData.timeMs);
+    } else {
+      timeStamp = DateUtil.toMMddHHmm(extCandleData.timeMs);
+    }
+
+    int precision = StringUtil.getPrecision(extCandleData.open,defaultPrecision:4);
+
     var p = paintLabel(canvas, size, "时间", timeStamp, leftTop, width);
     p = paintLabel(
-        canvas, size, "开", extCandleData.open.toStringAsFixed(style.fractionDigits), p, width,
+        canvas, size, "开", StringUtil.trimZero(extCandleData.open.toStringAsFixed(style.fractionDigits), precision), p, width,
         real: false);
     p = paintLabel(
-        canvas, size, "高", extCandleData.high.toStringAsFixed(style.fractionDigits), p, width,
+        canvas, size, "高", StringUtil.trimZero(extCandleData.high.toStringAsFixed(style.fractionDigits), precision), p, width,
         real: false);
     p = paintLabel(
-        canvas, size, "收", extCandleData.close.toStringAsFixed(style.fractionDigits), p, width,
+        canvas, size, "收", StringUtil.trimZero(extCandleData.close.toStringAsFixed(style.fractionDigits), precision), p, width,
         real: false);
     p = paintLabel(
-        canvas, size, "低", extCandleData.low.toStringAsFixed(style.fractionDigits), p, width,
+        canvas, size, "低", StringUtil.trimZero(extCandleData.low.toStringAsFixed(style.fractionDigits), precision), p, width,
         real: false);
     p = paintLabel(
-        canvas, size, "量", extCandleData.volume.toStringAsFixed(style.fractionDigits), p, width,
+        canvas, size, "量", StringUtil.trimZero(extCandleData.volume.toStringAsFixed(style.fractionDigits), precision), p, width,
         real: false);
     var rightBottom = Offset(p.dx + width, p.dy);
     var linePainter = Paint();
@@ -97,15 +109,15 @@ class TopFloatingPainter extends CustomPainter {
 
     p = paintLabel(canvas, size, "时间", timeStamp, leftTop, width);
     p = paintLabel(
-        canvas, size, "开", extCandleData.open.toStringAsFixed(style.fractionDigits), p, width);
+        canvas, size, "开", StringUtil.trimZero(extCandleData.open.toStringAsFixed(style.fractionDigits), precision), p, width);
     p = paintLabel(
-        canvas, size, "高", extCandleData.high.toStringAsFixed(style.fractionDigits), p, width);
+        canvas, size, "高", StringUtil.trimZero(extCandleData.high.toStringAsFixed(style.fractionDigits), precision), p, width);
     p = paintLabel(
-        canvas, size, "收", extCandleData.close.toStringAsFixed(style.fractionDigits), p, width);
+        canvas, size, "收", StringUtil.trimZero(extCandleData.close.toStringAsFixed(style.fractionDigits), precision), p, width);
     p = paintLabel(
-        canvas, size, "低", extCandleData.low.toStringAsFixed(style.fractionDigits), p, width);
+        canvas, size, "低", StringUtil.trimZero(extCandleData.low.toStringAsFixed(style.fractionDigits), precision), p, width);
     p = paintLabel(
-        canvas, size, "量", extCandleData.volume.toStringAsFixed(style.fractionDigits), p, width);
+        canvas, size, "量", StringUtil.trimZero(extCandleData.volume.toStringAsFixed(style.fractionDigits), precision), p, width);
 
     var backgroundPainter = Paint();
     backgroundPainter.color = style.floatingStyle.backGroundColor;
@@ -151,11 +163,13 @@ class FloatingWidget extends StatelessWidget {
     this.extCandleData,
     this.touchPoint,
     this.style,
+    this.durationMs,
   }) :super(key: key);
 
   final CandlesticksStyle style;
   final ExtCandleData extCandleData;
   final Offset touchPoint;
+  final double durationMs;
 
   Widget getText(String text, String data, TextStyle textStyle,
       [TextStyle textStyleColor,]) {
@@ -191,6 +205,7 @@ class FloatingWidget extends StatelessWidget {
         uiCamera: uiCamera,
         touchPoint: touchPoint,
         extCandleData: extCandleData,
+        durationMs: durationMs,
       ),
     );
   }

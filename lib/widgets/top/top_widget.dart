@@ -1,4 +1,5 @@
 import 'package:candlesticks/widgets/boll/boll_view.dart';
+import 'package:candlesticks/widgets/indicator_switch.dart';
 import 'package:candlesticks/widgets/ma/ma_value_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -51,10 +52,13 @@ class TopWidget extends StatelessWidget {
                     )
                 ),
                 Positioned.fill(
-                  child: MaWidget(
-                    dataStream: widget.extDataStream,
-                    style: widget.candlesticksStyle,
-                    maType: MaType.price,
+                  child: Visibility(
+                    visible: defaultIndicatorSwitch.mainSwitch,
+                    child: MaWidget(
+                      dataStream: widget.extDataStream,
+                      style: widget.candlesticksStyle,
+                      maType: MaType.price,
+                    ),
                   ),
                 ),
                 Positioned.fill(
@@ -62,6 +66,7 @@ class TopWidget extends StatelessWidget {
                     style: candlesticksStyle,
                     extCandleData: candlesticksContext.extCandleData,
                     touchPoint: candlesticksContext.touchPoint,
+                    durationMs: widget.durationMs,
                   ),
                 ),
                 Positioned.fill(

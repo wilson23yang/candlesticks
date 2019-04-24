@@ -89,6 +89,7 @@ class GraticulePainter extends CustomPainter {
       paintY(canvas, size, beginY + height * i, painter);
     }
     paintY(canvas, size, endY, painter);
+    paintY(canvas, size, size.height, painter);
 
     double width = size.width / this.candlesticksStyle.nX;
     for(var i = 0; i <= this.candlesticksStyle.nX; i++) {
