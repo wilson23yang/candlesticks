@@ -1,3 +1,4 @@
+import 'package:candlesticks/widgets/ma/ma_value_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:candlesticks/2d/candle_data.dart';
@@ -60,6 +61,7 @@ class MiddleWidget extends StatelessWidget {
             child: Stack(
               children: <Widget>[
                 Positioned.fill(
+                  top: 12,
                     child: CandlesWidget(
                       dataStream: widget.volumeDataStream,
                       style: widget.candlesticksStyle,
@@ -69,6 +71,7 @@ class MiddleWidget extends StatelessWidget {
                   child: MaWidget(
                     dataStream: widget.volumeDataStream,
                     style: widget.candlesticksStyle,
+                    maType: MaType.vol,
                   ),
                 ),
               ],

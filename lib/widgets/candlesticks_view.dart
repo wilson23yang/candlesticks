@@ -58,7 +58,7 @@ class CandlesticksView extends CandlesticksState {
               child: Column(
                   children: <Widget>[
                     Expanded(
-                        flex: 6,
+                        flex: 60,
                         child: TopWidget(
                           durationMs: durationMs,
                           rangeX: uiCameraAnimation?.value,
@@ -66,7 +66,7 @@ class CandlesticksView extends CandlesticksState {
                           extDataStream: exdataStream,
                         )),
                     Expanded(
-                        flex: 1,
+                        flex: 15,
                         child: MiddleWidget(
                           durationMs: durationMs,
                           rangeX: uiCameraAnimation?.value,

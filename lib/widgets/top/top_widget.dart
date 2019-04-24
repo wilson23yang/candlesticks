@@ -1,3 +1,5 @@
+import 'package:candlesticks/widgets/boll/boll_view.dart';
+import 'package:candlesticks/widgets/ma/ma_value_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:candlesticks/2d/candle_data.dart';
@@ -52,6 +54,7 @@ class TopWidget extends StatelessWidget {
                   child: MaWidget(
                     dataStream: widget.extDataStream,
                     style: widget.candlesticksStyle,
+                    maType: MaType.price,
                   ),
                 ),
                 Positioned.fill(

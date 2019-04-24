@@ -178,6 +178,7 @@ class MaWidgetState extends State<MaWidget> {
                 child: MaValueWidget(
                   maValueData: maValueData,
                   style: widget.style,
+                  maType: widget.maType,
                 )
             ),
 
@@ -192,10 +193,12 @@ class MaWidget extends StatefulWidget {
     Key key,
     this.dataStream,
     this.style,
+    this.maType,
   }) : super(key: key);
 
   final Stream<ExtCandleData> dataStream;
   final CandlesticksStyle style;
+  final MaType maType;
 
   @override
   MaWidgetState createState() => MaWidgetState();
