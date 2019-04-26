@@ -9,6 +9,7 @@ class CandlesticksContext extends InheritedWidget {
   final Function(ExtCandleData candleData) onCandleDataFinish;
   final ExtCandleData extCandleData;
   final Offset touchPoint;
+  final ExtCandleData lastCandleData;
 
   CandlesticksContext({
     Key key,
@@ -17,6 +18,7 @@ class CandlesticksContext extends InheritedWidget {
     @required this.onCandleDataFinish,
     @required this.extCandleData,
     @required this.touchPoint,
+    @required this.lastCandleData,
   }) : super(key: key, child: child);
 
   static CandlesticksContext of(BuildContext context) {

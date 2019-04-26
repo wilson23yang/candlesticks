@@ -1,8 +1,8 @@
+import 'package:candlesticks/widgets/mh/mh_style.dart';
 import 'package:flutter/material.dart';
 import 'package:candlesticks/widgets/ma/ma_style.dart';
 import 'package:candlesticks/widgets/candles/candles_style.dart';
 import 'package:candlesticks/widgets/floating/floating_style.dart';
-
 
 CandlesticksStyle DefaultDarkCandleStyle = CandlesticksStyle(
   backgroundColor: Color(0xFF060827),
@@ -11,7 +11,7 @@ CandlesticksStyle DefaultDarkCandleStyle = CandlesticksStyle(
   defaultViewPortX: 50,
   minViewPortX: 20,
   maxViewPortX: 256,
-  fractionDigits:8,
+  fractionDigits: 8,
   lineColor: Colors.white.withOpacity(0.2),
   nX: 5,
   nY: 4,
@@ -29,7 +29,7 @@ CandlesticksStyle DefaultDarkCandleStyle = CandlesticksStyle(
       cameraPaddingY: 0.1,
       duration: Duration(milliseconds: 200)),
   maStyle: MaStyle(
-      currentColor:Colors.white.withOpacity(0.85),
+      currentColor: Colors.white.withOpacity(0.85),
       cameraPaddingY: 0.2,
       shortCount: 5,
       shortColor: Colors.yellowAccent,
@@ -38,6 +38,7 @@ CandlesticksStyle DefaultDarkCandleStyle = CandlesticksStyle(
       longCount: 30,
       longColor: Colors.deepPurpleAccent,
       duration: Duration(milliseconds: 200)),
+  mhStyle: defaultMHStyle,
 );
 
 CandlesticksStyle DefaultLightCandleStyle = CandlesticksStyle(
@@ -47,7 +48,7 @@ CandlesticksStyle DefaultLightCandleStyle = CandlesticksStyle(
   defaultViewPortX: 50,
   minViewPortX: 20,
   maxViewPortX: 256,
-  fractionDigits:8,
+  fractionDigits: 8,
   lineColor: Colors.white.withOpacity(0.2),
   nX: 5,
   nY: 4,
@@ -65,7 +66,7 @@ CandlesticksStyle DefaultLightCandleStyle = CandlesticksStyle(
       cameraPaddingY: 0.1,
       duration: Duration(milliseconds: 200)),
   maStyle: MaStyle(
-      currentColor:Colors.white.withOpacity(0.85),
+      currentColor: Colors.white.withOpacity(0.85),
       cameraPaddingY: 0.2,
       shortCount: 5,
       shortColor: Colors.yellowAccent,
@@ -74,6 +75,7 @@ CandlesticksStyle DefaultLightCandleStyle = CandlesticksStyle(
       longCount: 30,
       longColor: Colors.deepPurpleAccent,
       duration: Duration(milliseconds: 200)),
+  mhStyle: defaultMHStyle,
 );
 
 class CandlesticksStyle {
@@ -84,7 +86,7 @@ class CandlesticksStyle {
   final int maxViewPortX;
   final Color backgroundColor;
   final Color lineColor;
-  final double durationMs;//k线时间间隔
+  final double durationMs; //k线时间间隔
   //标线
   final int fractionDigits;
   final double paddingY;
@@ -94,8 +96,23 @@ class CandlesticksStyle {
   final FloatingStyle floatingStyle;
   final CandlesStyle candlesStyle;
   final MaStyle maStyle;
+  final MHStyle mhStyle;
 
   CandlesticksStyle(
-      {this.minViewPortX, this.maxViewPortX, this.floatingStyle, this.lineColor, this.candlesStyle, this.maStyle, this.cameraDuration, this.initAfterNData, this.backgroundColor, this.defaultViewPortX,
-        this.fractionDigits, this.paddingY, this.nX, this.nY, this.durationMs});
+      {this.minViewPortX,
+      this.maxViewPortX,
+      this.floatingStyle,
+      this.lineColor,
+      this.candlesStyle,
+      this.maStyle,
+      this.mhStyle,
+      this.cameraDuration,
+      this.initAfterNData,
+      this.backgroundColor,
+      this.defaultViewPortX,
+      this.fractionDigits,
+      this.paddingY,
+      this.nX,
+      this.nY,
+      this.durationMs});
 }

@@ -119,17 +119,17 @@ class MaWidgetState extends State<MaWidget> {
     }
     if (count == widget.style.maStyle.shortCount) {
       maValueData = MaValueData(shortValue: value,
-          middleValue: maValueData.middleValue,
-          longValue: maValueData.longValue,
+          middleValue: maValueData?.middleValue,
+          longValue: maValueData?.longValue,
           currentValue: currentValue);
     } else if (count == widget.style.maStyle.middleCount) {
-      maValueData = MaValueData(shortValue: maValueData.shortValue,
+      maValueData = MaValueData(shortValue: maValueData?.shortValue,
           middleValue: value,
-          longValue: maValueData.longValue,
+          longValue: maValueData?.longValue,
           currentValue: currentValue);
     } else {
-      maValueData = MaValueData(shortValue: maValueData.shortValue,
-          middleValue: maValueData.middleValue,
+      maValueData = MaValueData(shortValue: maValueData?.shortValue,
+          middleValue: maValueData?.middleValue,
           longValue: value,
           currentValue: currentValue);
     }

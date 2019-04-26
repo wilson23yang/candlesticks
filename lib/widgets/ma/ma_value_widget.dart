@@ -1,4 +1,4 @@
-import 'package:candlesticks/utils/StringUtil.dart';
+import 'package:candlesticks/utils/string_util.dart';
 import 'package:flutter/material.dart';
 
 import 'package:candlesticks/widgets/aabb/aabb_range.dart';
@@ -52,16 +52,16 @@ class MaValuePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if(maType == MaType.price){
-      int precision = StringUtil.getPrecision(maValueData.currentValue.toStringAsFixed(style.fractionDigits));
-      double x = paintLabel(canvas, size, 0, "Current:" + StringUtil.trimZero(maValueData.currentValue.toStringAsFixed(style.fractionDigits), precision), style.maStyle.currentColor);
-      x += paintLabel(canvas, size, x, "MA${style.maStyle.shortCount}:" + StringUtil.trimZero(maValueData.shortValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.shortColor);
-      x += paintLabel(canvas, size, x, "MA${style.maStyle.middleCount}:" + StringUtil.trimZero(maValueData.middleValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.middleColor);
-      x += paintLabel(canvas, size, x, "MA${style.maStyle.longCount}:" + StringUtil.trimZero(maValueData.longValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.longColor);
+      int precision = StringUtil.getPrecision(maValueData?.currentValue?.toStringAsFixed(style.fractionDigits));
+      double x = paintLabel(canvas, size, 0, "Current:" + StringUtil.trimZero(maValueData?.currentValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.currentColor);
+      x += paintLabel(canvas, size, x, "MA${style.maStyle.shortCount}:" + StringUtil.trimZero(maValueData?.shortValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.shortColor);
+      x += paintLabel(canvas, size, x, "MA${style.maStyle.middleCount}:" + StringUtil.trimZero(maValueData?.middleValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.middleColor);
+      x += paintLabel(canvas, size, x, "MA${style.maStyle.longCount}:" + StringUtil.trimZero(maValueData?.longValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.longColor);
     } else {
-      double x = paintLabel(canvas, size, 0, "Current:" + StringUtil.abridge2KM(maValueData.currentValue.toStringAsFixed(style.fractionDigits)), style.maStyle.currentColor);
-      x += paintLabel(canvas, size, x, "MA${style.maStyle.shortCount}:" + StringUtil.abridge2KM(maValueData.shortValue?.toStringAsFixed(style.fractionDigits)), style.maStyle.shortColor);
-      x += paintLabel(canvas, size, x, "MA${style.maStyle.middleCount}:" + StringUtil.abridge2KM(maValueData.middleValue?.toStringAsFixed(style.fractionDigits)), style.maStyle.middleColor);
-      x += paintLabel(canvas, size, x, "MA${style.maStyle.longCount}:" + StringUtil.abridge2KM(maValueData.longValue?.toStringAsFixed(style.fractionDigits)), style.maStyle.longColor);
+      double x = paintLabel(canvas, size, 0, "Current:" + StringUtil.abridge2KM(maValueData?.currentValue?.toStringAsFixed(style.fractionDigits)), style.maStyle.currentColor);
+      x += paintLabel(canvas, size, x, "MA${style.maStyle.shortCount}:" + StringUtil.abridge2KM(maValueData?.shortValue?.toStringAsFixed(style.fractionDigits)), style.maStyle.shortColor);
+      x += paintLabel(canvas, size, x, "MA${style.maStyle.middleCount}:" + StringUtil.abridge2KM(maValueData?.middleValue?.toStringAsFixed(style.fractionDigits)), style.maStyle.middleColor);
+      x += paintLabel(canvas, size, x, "MA${style.maStyle.longCount}:" + StringUtil.abridge2KM(maValueData?.longValue?.toStringAsFixed(style.fractionDigits)), style.maStyle.longColor);
     }
 
   }

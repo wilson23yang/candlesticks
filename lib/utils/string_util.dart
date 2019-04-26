@@ -10,7 +10,7 @@ class StringUtil{
       }
       return count;
     }catch(e){
-      return count;
+      return '';
     }
   }
 

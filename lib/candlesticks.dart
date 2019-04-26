@@ -6,6 +6,7 @@ export 'package:candlesticks/2d/candle_data.dart';
 export 'package:candlesticks/widgets/candlesticks_style.dart';
 export 'package:candlesticks/widgets/candles/candles_style.dart';
 export 'package:candlesticks/widgets/ma/ma_style.dart';
+export 'package:candlesticks/widgets/mh/mh_style.dart';
 export 'package:candlesticks/widgets/floating/floating_style.dart';
 export 'package:candlesticks/widgets/boll/boll_style.dart';
 export 'package:candlesticks/widgets/indicator_switch.dart';

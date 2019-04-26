@@ -47,29 +47,30 @@ class GraticulePainter extends CustomPainter {
 //    }
   }
 
-  void paintY(Canvas canvas, Size size, double y, Paint painter) {
+  void paintY(Canvas canvas, Size size, double y, Paint painter,{bool showText = true}) {
     var point = uiCamera.viewPortToWorldPoint(
         uiCamera.screenToViewPortPoint(size, Offset(0, y)));
     var worldY = point.y;
     canvas.drawLine(Offset(0, y), Offset(size.width, y), painter);
-    var priceStr = worldY.toStringAsFixed(this.candlesticksStyle.fractionDigits);
 
-    TextPainter textPainter = TextPainter(
-        textDirection: TextDirection.ltr,
-        maxLines: 1,
-        textAlign: TextAlign.end,
-        text: TextSpan(
-          text: priceStr,
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.2),
-            fontSize: 10.0,
-          ),
-        )
-    );
+    if(showText){
+      var priceStr = worldY.toStringAsFixed(this.candlesticksStyle.fractionDigits);
+      TextPainter textPainter = TextPainter(
+          textDirection: TextDirection.ltr,
+          maxLines: 1,
+          textAlign: TextAlign.end,
+          text: TextSpan(
+            text: priceStr,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.2),
+              fontSize: 10.0,
+            ),
+          )
+      );
 
-    textPainter.layout();
-    textPainter.paint(canvas, Offset(size.width - textPainter.width, y));
-
+      textPainter.layout();
+      textPainter.paint(canvas, Offset(size.width - textPainter.width, y));
+    }
   }
 
   @override
@@ -90,6 +91,7 @@ class GraticulePainter extends CustomPainter {
     }
     paintY(canvas, size, endY, painter);
     paintY(canvas, size, size.height, painter);
+    paintY(canvas, size, 0, painter,showText: false);
 
     double width = size.width / this.candlesticksStyle.nX;
     for(var i = 0; i <= this.candlesticksStyle.nX; i++) {

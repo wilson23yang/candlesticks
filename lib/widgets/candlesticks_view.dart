@@ -1,3 +1,5 @@
+import 'package:candlesticks/widgets/line_type.dart';
+import 'package:candlesticks/widgets/mh/mh_top_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:candlesticks/widgets/candlesticks_state.dart';
@@ -55,29 +57,52 @@ class CandlesticksView extends CandlesticksState {
               candlesX: candlesX,
               extCandleData: extCandleData,
               touchPoint: touchPoint,
-              child: Column(
-                  children: <Widget>[
-                    Expanded(
-                        flex: 60,
-                        child: TopWidget(
-                          durationMs: durationMs,
-                          rangeX: uiCameraAnimation?.value,
-                          candlesticksStyle: widget.candlesticksStyle,
-                          extDataStream: exdataStream,
-                        )),
-                    Expanded(
-                        flex: 15,
-                        child: MiddleWidget(
-                          durationMs: durationMs,
-                          rangeX: uiCameraAnimation?.value,
-                          candlesticksStyle: widget.candlesticksStyle,
-                          extDataStream: exdataStream,
-                        )
-                    )
-                  ]),
+              lastCandleData: candleDataList != null ? candleDataList[candleDataList.length -1] : null,
+              child: widget.lineType == LineType.k_line ? _buildKLine() :_buildMhLine(),
             );
-          }
-      ),
+          }),
     );
+  }
+
+  Widget _buildKLine(){
+    return Column(children: <Widget>[
+      Expanded(
+          flex: 60,
+          child: TopWidget(
+            durationMs: durationMs,
+            rangeX: uiCameraAnimation?.value,
+            candlesticksStyle: widget.candlesticksStyle,
+            extDataStream: exdataStream,
+          )),
+      Expanded(
+          flex: 15,
+          child: MiddleWidget(
+            durationMs: durationMs,
+            rangeX: uiCameraAnimation?.value,
+            candlesticksStyle: widget.candlesticksStyle,
+            extDataStream: exdataStream,
+          ))
+    ]);
+  }
+
+  Widget _buildMhLine(){
+    return Column(children: <Widget>[
+      Expanded(
+          flex: 60,
+          child: MHTopWidget(
+            durationMs: durationMs,
+            rangeX: uiCameraAnimation?.value,
+            candlesticksStyle: widget.candlesticksStyle,
+            extDataStream: exdataStream,
+          )),
+      Expanded(
+          flex: 15,
+          child: MiddleWidget(
+            durationMs: durationMs,
+            rangeX: uiCameraAnimation?.value,
+            candlesticksStyle: widget.candlesticksStyle,
+            extDataStream: exdataStream,
+          ))
+    ]);
   }
 }

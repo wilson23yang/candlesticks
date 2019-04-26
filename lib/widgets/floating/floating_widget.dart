@@ -1,5 +1,5 @@
-import 'package:candlesticks/utils/DateUtil.dart';
-import 'package:candlesticks/utils/StringUtil.dart';
+import 'package:candlesticks/utils/date_util.dart';
+import 'package:candlesticks/utils/string_util.dart';
 import 'package:flutter/material.dart';
 
 import 'package:candlesticks/2d/candle_data.dart';
@@ -60,19 +60,22 @@ class TopFloatingPainter extends CustomPainter {
     if (extCandleData == null) {
       return;
     }
-    var sceneX = uiCamera
+    var point = uiCamera
         .viewPortToScreenPoint(size, uiCamera.worldToViewPortPoint(
-        UIOPoint(extCandleData.timeMs.toDouble(), 0)))
-        .dx;
+        UIOPoint(extCandleData.timeMs.toDouble(), extCandleData.close)));
+
+    var sceneX = point.dx;
+    var sceneY = point.dy;
+    //print('extCandleData......$sceneX      $sceneY');
     double width = size.width / 3.5;
     if (width < style.floatingStyle.minWidth) {
       width = style.floatingStyle.minWidth;
     }
-    var leftTop = Offset(0, 20);
+    var leftTop = Offset(0+10.0, 20);
     if (sceneX < size.width / 2) {
-      leftTop = Offset(size.width - width, 20);
+      leftTop = Offset(size.width - width - 10.0, 20);
     } else {
-      leftTop = Offset(0, 20);
+      leftTop = Offset(0 + 10.0, 20);
     }
 
     var time = new DateTime.fromMillisecondsSinceEpoch(extCandleData.timeMs);
@@ -132,9 +135,9 @@ class TopFloatingPainter extends CustomPainter {
     var crossPainter = Paint();
     crossPainter.color = style.floatingStyle.crossColor;
     crossPainter.style = PaintingStyle.stroke;
-    var touchWorldPoint = UIOPoint(extCandleData.timeMs + extCandleData.durationMs / 2, 0);
+    var touchWorldPoint = UIOPoint(extCandleData.timeMs + extCandleData.durationMs / 2, extCandleData.close);
     var touchScenePoint = uiCamera.viewPortToScreenPoint(size, uiCamera.worldToViewPortPoint(touchWorldPoint));
-    var realTouchPoint = Offset(touchScenePoint.dx, touchPoint.dy);
+    var realTouchPoint = Offset(touchScenePoint.dx, touchScenePoint.dy);
     canvas.drawLine(
         Offset(touchScenePoint.dx, 0), Offset(touchScenePoint.dx, size.height),
         crossPainter);
