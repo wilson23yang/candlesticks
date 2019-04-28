@@ -1,3 +1,5 @@
+import 'package:candlesticks/widgets/boll/boll_value_widget.dart';
+import 'package:candlesticks/widgets/boll/boll_value_widget.dart';
 import 'package:candlesticks/widgets/boll/boll_view.dart';
 import 'package:candlesticks/widgets/indicator_switch.dart';
 import 'package:candlesticks/widgets/ma/ma_value_widget.dart';
@@ -12,6 +14,7 @@ import 'package:candlesticks/widgets/aabb/aabb_widget.dart';
 import 'package:candlesticks/widgets/graticule/graticule_widget.dart';
 import 'package:candlesticks/widgets/candlesticks_context_widget.dart';
 import 'package:candlesticks/widgets/floating/floating_widget.dart';
+//import 'package:candlesticks/widgets/boll/boll_value_data.dart' as boll;
 
 class TopWidget extends StatelessWidget {
 
@@ -45,7 +48,7 @@ class TopWidget extends StatelessWidget {
             ),
             child: Stack(
               children: <Widget>[
-                Positioned.fill(
+               Positioned.fill(
                     child: CandlesWidget(
                       dataStream: widget.extDataStream,
                       style: widget.candlesticksStyle,
@@ -53,11 +56,23 @@ class TopWidget extends StatelessWidget {
                 ),
                 Positioned.fill(
                   child: Visibility(
-                    visible: defaultIndicatorSwitch.mainSwitch,
+                    visible: defaultIndicatorSwitch.maSwitch && defaultIndicatorSwitch.mainSwitch,
+                    maintainState: true,
                     child: MaWidget(
                       dataStream: widget.extDataStream,
                       style: widget.candlesticksStyle,
                       maType: MaType.price,
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: Visibility(
+                    visible: defaultIndicatorSwitch.bollSwitch && defaultIndicatorSwitch.mainSwitch,
+                    maintainState: true,
+                    child: BollWidget(
+                      dataStream: widget.extDataStream,
+                      style: widget.candlesticksStyle,
+                      type: Type.price,
                     ),
                   ),
                 ),
