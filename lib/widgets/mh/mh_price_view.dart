@@ -6,12 +6,8 @@ import 'package:candlesticks/2d/uiobjects/uio_path.dart';
 import 'package:candlesticks/2d/uiobjects/uio_point.dart';
 import 'package:candlesticks/2d/ui_animated_widget.dart';
 import 'package:candlesticks/2d/candle_data.dart';
-import 'package:candlesticks/widgets/ma/ma_style.dart';
-import 'package:candlesticks/widgets/candlesticks_context_widget.dart';
 import 'package:candlesticks/widgets/aabb/aabb_context.dart';
 import 'package:candlesticks/widgets/ma/ma_value_widget.dart';
-import 'package:candlesticks/widgets/ma/ma_context.dart';
-import 'package:candlesticks/widgets/ma/ma_value_data.dart';
 import 'package:candlesticks/widgets/candlesticks_style.dart';
 
 
@@ -103,7 +99,7 @@ class MHPriceWidgetState extends State<MHPriceWidget> {
                 child: UIAnimatedWidget<UIOPath, UIOPoint>(
                   dataStream: widget.dataStream,
                   uiCamera: uiCamera,
-                  duration: const Duration(seconds: 60),
+                  duration: const Duration(seconds: 0),
                   state: () =>
                       MHPriceView(widget.style.mhStyle.lineColor,widget.style.mhStyle.lineWidth),
                 )
