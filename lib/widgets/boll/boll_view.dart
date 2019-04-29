@@ -32,7 +32,7 @@ class BollView extends UIAnimatedView<UIOPath, UIOPoint> {
   }
 
   double maAverage(int index, int n) {
-    if ((this._values == null) || (_values.length < n)) {
+    if ((this._values == null) || (_values.length < n) || index < N) {
       return null;
     }
     //print(_values.sublist(index - N, index));
@@ -44,6 +44,9 @@ class BollView extends UIAnimatedView<UIOPath, UIOPoint> {
   }
 
   double _md(double ma,int index){
+    if ((this._values == null) || index < N) {
+      return null;
+    }
     List<double> subValues = _values.sublist(index - N + 1, index);
     List<double> dd = [];
     subValues.forEach((c){
@@ -80,6 +83,9 @@ class BollView extends UIAnimatedView<UIOPath, UIOPoint> {
       return null;
     }
     double md = _md(ma, candleData.index);
+    if(md == null){
+      return null;
+    }
     double MB = maAverage(candleData.index-1, N);
     if(MB == null){
       return null;
