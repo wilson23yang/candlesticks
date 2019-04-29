@@ -1,3 +1,5 @@
+import 'package:candlesticks/widgets/bottom/BottomWidget.dart';
+import 'package:candlesticks/widgets/indicator_switch.dart';
 import 'package:candlesticks/widgets/line_type.dart';
 import 'package:candlesticks/widgets/mh/mh_top_widget.dart';
 import 'package:flutter/material.dart';
@@ -16,17 +18,18 @@ class CandlesticksView extends CandlesticksState {
   CandlesticksView({Stream<CandleData> dataStream})
       : super(dataStream: dataStream);
 
+  GlobalKey globalKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     if (isWaitingForInitData()) {
       return Container(
-        /*
+          /*
         child: Center(
           child: CircularProgressIndicator(),
         ),
         */
-      );
+          );
     }
 
     return GestureDetector(
@@ -38,7 +41,6 @@ class CandlesticksView extends CandlesticksState {
 //      },
       onHorizontalDragEnd: onHorizontalDragEnd,
       onHorizontalDragUpdate: onHorizontalDragUpdate,
-
 
       onScaleUpdate: onScaleUpdate,
       onScaleStart: handleScaleStart,
@@ -53,18 +55,23 @@ class CandlesticksView extends CandlesticksState {
           ]),
           builder: (BuildContext context, Widget child) {
             return CandlesticksContext(
+              key: globalKey,
               onCandleDataFinish: onCandleDataFinish,
               candlesX: candlesX,
               extCandleData: extCandleData,
               touchPoint: touchPoint,
-              lastCandleData: candleDataList != null ? candleDataList[candleDataList.length -1] : null,
-              child: widget.lineType == LineType.k_line ? _buildKLine() :_buildMhLine(),
+              lastCandleData: candleDataList != null
+                  ? candleDataList[candleDataList.length - 1]
+                  : null,
+              child: widget.lineType == LineType.k_line
+                  ? _buildKLine()
+                  : _buildMhLine(),
             );
           }),
     );
   }
 
-  Widget _buildKLine(){
+  Widget _buildKLine() {
     return Column(children: <Widget>[
       Expanded(
           flex: 60,
@@ -74,18 +81,32 @@ class CandlesticksView extends CandlesticksState {
             candlesticksStyle: widget.candlesticksStyle,
             extDataStream: exdataStream,
           )),
-      Expanded(
-          flex: 15,
+      Container(
+          height: 70,
           child: MiddleWidget(
             durationMs: durationMs,
             rangeX: uiCameraAnimation?.value,
             candlesticksStyle: widget.candlesticksStyle,
             extDataStream: exdataStream,
-          ))
+          )),
+      Visibility(
+        visible: defaultIndicatorSwitch.subSwitch,
+        maintainState: true,
+        child: Container(
+          height: 70,
+          child: BottomWidget(
+            durationMs: durationMs,
+            rangeX: uiCameraAnimation?.value,
+            candlesticksStyle: widget.candlesticksStyle,
+            extDataStream: exdataStream,
+          ),
+        ),
+      ),
     ]);
   }
 
-  Widget _buildMhLine(){
+  Widget _buildMhLine() {
+
     return Column(children: <Widget>[
       Expanded(
           flex: 60,
@@ -95,14 +116,27 @@ class CandlesticksView extends CandlesticksState {
             candlesticksStyle: widget.candlesticksStyle,
             extDataStream: exdataStream,
           )),
-      Expanded(
-          flex: 15,
+      Container(
+          height: 70,
           child: MiddleWidget(
             durationMs: durationMs,
             rangeX: uiCameraAnimation?.value,
             candlesticksStyle: widget.candlesticksStyle,
             extDataStream: exdataStream,
-          ))
+          )),
+      Visibility(
+        visible: defaultIndicatorSwitch.subSwitch,
+        maintainState: true,
+        child: Container(
+          height: 70,
+          child: BottomWidget(
+            durationMs: durationMs,
+            rangeX: uiCameraAnimation?.value,
+            candlesticksStyle: widget.candlesticksStyle,
+            extDataStream: exdataStream,
+          ),
+        ),
+      ),
     ]);
   }
 }

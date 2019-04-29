@@ -1,3 +1,4 @@
+import 'package:candlesticks/widgets/graticule/graticule_net_widget.dart';
 import 'package:candlesticks/widgets/ma/ma_value_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -60,6 +61,12 @@ class MiddleWidget extends StatelessWidget {
             ),
             child: Stack(
               children: <Widget>[
+                Positioned.fill(
+                    child: GraticuleNetWidget(
+                      paddingY: 0.1,
+                      candlesticksStyle: widget.candlesticksStyle,
+                    )
+                ),
                 Positioned.fill(
                   top: 12,
                     child: CandlesWidget(

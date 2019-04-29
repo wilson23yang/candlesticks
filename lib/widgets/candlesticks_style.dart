@@ -1,4 +1,6 @@
 import 'package:candlesticks/widgets/mh/mh_style.dart';
+import 'package:candlesticks/widgets/rsi/rsi_style.dart';
+import 'package:candlesticks/widgets/wr/wr_style.dart';
 import 'package:flutter/material.dart';
 import 'package:candlesticks/widgets/ma/ma_style.dart';
 import 'package:candlesticks/widgets/candles/candles_style.dart';
@@ -39,6 +41,8 @@ CandlesticksStyle DefaultDarkCandleStyle = CandlesticksStyle(
       longColor: Colors.deepPurpleAccent,
       duration: Duration(milliseconds: 200)),
   mhStyle: defaultMHStyle,
+  rsiStyle: defaultRsiStyle,
+  wrStyle: defaultWrStyle,
 );
 
 CandlesticksStyle DefaultLightCandleStyle = CandlesticksStyle(
@@ -76,6 +80,8 @@ CandlesticksStyle DefaultLightCandleStyle = CandlesticksStyle(
       longColor: Colors.deepPurpleAccent,
       duration: Duration(milliseconds: 200)),
   mhStyle: defaultMHStyle,
+  rsiStyle: defaultRsiStyle,
+  wrStyle: defaultWrStyle,
 );
 
 class CandlesticksStyle {
@@ -97,22 +103,25 @@ class CandlesticksStyle {
   final CandlesStyle candlesStyle;
   final MaStyle maStyle;
   final MHStyle mhStyle;
+  final RsiStyle rsiStyle;
+  final WrStyle wrStyle;
 
-  CandlesticksStyle(
-      {this.minViewPortX,
-      this.maxViewPortX,
-      this.floatingStyle,
-      this.lineColor,
-      this.candlesStyle,
-      this.maStyle,
-      this.mhStyle,
-      this.cameraDuration,
-      this.initAfterNData,
-      this.backgroundColor,
-      this.defaultViewPortX,
-      this.fractionDigits,
-      this.paddingY,
-      this.nX,
-      this.nY,
-      this.durationMs});
+  CandlesticksStyle({this.minViewPortX,
+    this.maxViewPortX,
+    this.floatingStyle,
+    this.lineColor,
+    this.candlesStyle,
+    this.maStyle,
+    this.mhStyle,
+    this.rsiStyle,
+    this.wrStyle,
+    this.cameraDuration,
+    this.initAfterNData,
+    this.backgroundColor,
+    this.defaultViewPortX,
+    this.fractionDigits,
+    this.paddingY,
+    this.nX,
+    this.nY,
+    this.durationMs});
 }
