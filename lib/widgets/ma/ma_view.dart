@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:candlesticks/2d/uiobjects/uio_path.dart';
 import 'package:candlesticks/2d/uiobjects/uio_point.dart';
 import 'package:candlesticks/2d/ui_animated_widget.dart';
 import 'package:candlesticks/2d/candle_data.dart';
-import 'package:candlesticks/widgets/ma/ma_style.dart';
-import 'package:candlesticks/widgets/candlesticks_context_widget.dart';
 import 'package:candlesticks/widgets/aabb/aabb_context.dart';
 import 'package:candlesticks/widgets/ma/ma_value_widget.dart';
 import 'package:candlesticks/widgets/ma/ma_context.dart';

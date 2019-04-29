@@ -1,7 +1,6 @@
 import 'package:candlesticks/utils/date_util.dart';
 import 'package:candlesticks/utils/string_util.dart';
 import 'package:flutter/material.dart';
-
 import 'package:candlesticks/2d/candle_data.dart';
 import 'package:candlesticks/2d/uiobjects/uio_point.dart';
 import 'package:candlesticks/2d/uicamera.dart';

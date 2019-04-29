@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'package:candlesticks/widgets/aabb/aabb_range.dart';
 import 'package:candlesticks/widgets/aabb/aabb_context.dart';
 import 'package:candlesticks/2d/uicamera.dart';
-import 'package:candlesticks/2d/uiobjects/uio_point.dart';
 import 'package:candlesticks/widgets/candlesticks_style.dart';
 
 class GraticulePainter extends CustomPainter {

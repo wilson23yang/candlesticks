@@ -1,4 +1,3 @@
-import 'package:candlesticks/widgets/boll/boll_view.dart';
 import 'package:flutter/material.dart';
 
 class WrContext extends InheritedWidget {

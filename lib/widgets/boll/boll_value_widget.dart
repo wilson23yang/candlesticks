@@ -1,10 +1,8 @@
 import 'package:candlesticks/utils/string_util.dart';
 import 'package:flutter/material.dart';
-
 import 'package:candlesticks/widgets/aabb/aabb_context.dart';
 import 'package:candlesticks/2d/uicamera.dart';
 import 'package:candlesticks/widgets/candlesticks_style.dart';
-import 'package:candlesticks/widgets/ma/ma_value_widget.dart';
 import 'package:candlesticks/widgets/boll/boll_value_data.dart';
 
 class BollValuePainter extends CustomPainter {

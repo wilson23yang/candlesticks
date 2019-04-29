@@ -3,11 +3,9 @@ import 'package:candlesticks/widgets/indicator_switch.dart';
 import 'package:candlesticks/widgets/rsi/rsi_view.dart';
 import 'package:candlesticks/widgets/wr/wr_view.dart';
 import 'package:flutter/material.dart';
-
 import 'package:candlesticks/2d/candle_data.dart';
 import 'package:candlesticks/widgets/aabb/aabb_range.dart';
 import 'package:candlesticks/widgets/candlesticks_style.dart';
-import 'package:candlesticks/widgets/candles/candles_widget.dart';
 import 'package:candlesticks/widgets/aabb/aabb_widget.dart';
 
 class BottomWidget extends StatelessWidget {

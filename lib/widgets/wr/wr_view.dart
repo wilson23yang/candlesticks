@@ -1,15 +1,7 @@
-import 'package:candlesticks/widgets/boll/boll_context.dart';
-import 'package:candlesticks/widgets/boll/boll_value_data.dart';
-import 'package:candlesticks/widgets/boll/boll_value_widget.dart';
-import 'package:candlesticks/widgets/rsi/rsi_context.dart';
-import 'package:candlesticks/widgets/rsi/rsi_value_data.dart';
-import 'package:candlesticks/widgets/rsi/rsi_value_widget.dart';
-import 'package:candlesticks/widgets/rsi_period_config.dart';
 import 'package:candlesticks/widgets/wr/wr_context.dart';
 import 'package:candlesticks/widgets/wr/wr_value_data.dart';
 import 'package:candlesticks/widgets/wr/wr_value_widget.dart';
 import 'package:flutter/material.dart';
-
 import 'package:candlesticks/2d/uiobjects/uio_path.dart';
 import 'package:candlesticks/2d/uiobjects/uio_point.dart';
 import 'package:candlesticks/2d/ui_animated_widget.dart';
@@ -40,7 +32,7 @@ class WrView extends UIAnimatedView<UIOPath, UIOPoint> {
   double getHigh(int period) {
     List<double> sub = _Hvalues.sublist(_Hvalues.length - period, _Hvalues.length);
     sub.sort();
-    print('getHigh sub list:$sub                ${sub.last}');
+    //print('getHigh sub list:$sub                ${sub.last}');
     return sub.last;
   }
 
@@ -48,7 +40,7 @@ class WrView extends UIAnimatedView<UIOPath, UIOPoint> {
   double getLow(int period) {
     List<double> sub = _Lvalues.sublist(_Lvalues.length - period, _Lvalues.length);
     sub.sort();
-    print('getLow sub list:$sub                ${sub.first}');
+    //print('getLow sub list:$sub                ${sub.first}');
     return sub.first;
   }
 
@@ -85,6 +77,7 @@ class WrView extends UIAnimatedView<UIOPath, UIOPoint> {
         candleData.timeMs.toDouble() + candleData.durationMs.toDouble() / 2.0,
         y,
         index: candleData.index);
+    //print('wr---------$y     ${(h - c)}    $h      $c');
     wrContext.onWrChange(period,y);
     return point;
   }

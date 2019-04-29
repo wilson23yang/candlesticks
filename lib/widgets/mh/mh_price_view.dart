@@ -1,7 +1,6 @@
 import 'package:candlesticks/widgets/mh/mh_context.dart';
 import 'package:candlesticks/widgets/mh/mh_value_data.dart';
 import 'package:flutter/material.dart';
-
 import 'package:candlesticks/2d/uiobjects/uio_path.dart';
 import 'package:candlesticks/2d/uiobjects/uio_point.dart';
 import 'package:candlesticks/2d/ui_animated_widget.dart';

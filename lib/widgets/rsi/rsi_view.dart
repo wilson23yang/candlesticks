@@ -1,19 +1,13 @@
-import 'package:candlesticks/widgets/boll/boll_context.dart';
-import 'package:candlesticks/widgets/boll/boll_value_data.dart';
-import 'package:candlesticks/widgets/boll/boll_value_widget.dart';
 import 'package:candlesticks/widgets/rsi/rsi_context.dart';
 import 'package:candlesticks/widgets/rsi/rsi_value_data.dart';
 import 'package:candlesticks/widgets/rsi/rsi_value_widget.dart';
-import 'package:candlesticks/widgets/rsi_period_config.dart';
 import 'package:flutter/material.dart';
-
 import 'package:candlesticks/2d/uiobjects/uio_path.dart';
 import 'package:candlesticks/2d/uiobjects/uio_point.dart';
 import 'package:candlesticks/2d/ui_animated_widget.dart';
 import 'package:candlesticks/2d/candle_data.dart';
 import 'package:candlesticks/widgets/aabb/aabb_context.dart';
 import 'package:candlesticks/widgets/candlesticks_style.dart';
-import 'dart:math';
 
 class RsiView extends UIAnimatedView<UIOPath, UIOPoint> {
   List<double> _values;
