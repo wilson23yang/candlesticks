@@ -1,3 +1,4 @@
+import 'package:candlesticks/utils/date_util.dart';
 import 'package:candlesticks/widgets/mh/mh_context.dart';
 import 'package:candlesticks/widgets/mh/mh_value_data.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +31,6 @@ class MHPriceView extends UIAnimatedView<UIOPath, UIOPoint> {
 
   @override
   UIOPoint getCandle(ExtCandleData candleData) {
-
-    print('ExtCandleData    ${candleData.close}    ${candleData.index}');
     return UIOPoint(candleData.timeMs.toDouble() + candleData.durationMs.toDouble()/2.0, candleData.close,index: candleData.index);
   }
 

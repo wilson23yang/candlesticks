@@ -147,6 +147,12 @@ abstract class AABBState extends State<AABBWidget>
     var realMinY = minY - realHeight * paddingY;
     var realMaxY = realMinY + realHeight;
 
+    ///解决中间数据不变同导至viewport高度0时，导至point顠出canvas绘制区引起页面卡顿
+    if(realMinY == realMaxY){
+      realMinY = realMinY - realMinY * 0.1;
+      realMaxY = realMaxY + realMaxY * 0.1;
+    }
+
     return UICamera(
         UIORect(UIOPoint(minX, realMinY), UIOPoint(maxX, realMaxY)));
   }
