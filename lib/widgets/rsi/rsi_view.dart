@@ -70,9 +70,17 @@ class RsiView extends UIAnimatedView<UIOPath, UIOPoint> {
       return null;
     }
 
-    double y = gainAverage(period) *
-        100 /
-        (gainAverage(period).abs() + declineAverage(period).abs());
+    double gain = gainAverage(period);
+    double decline = declineAverage(period);
+
+    if(gain.abs() + decline.abs() == 0){
+      return null;
+    }
+
+    double y = gain * 100 / (gain.abs() + decline.abs());
+    if(y == null){
+      return null;
+    }
     var point = UIOPoint(
         candleData.timeMs.toDouble() + candleData.durationMs.toDouble() / 2.0,
         y,

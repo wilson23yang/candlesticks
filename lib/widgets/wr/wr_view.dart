@@ -72,12 +72,18 @@ class WrView extends UIAnimatedView<UIOPath, UIOPoint> {
     double c = candleData.close;
     double h = getHigh(period);
     double l = getLow(period);
+    if(h - l == 0){
+      return null;
+    }
     double y = 100 * (h - c)/(h - l);
+    //print('wr---------$y     ${(h - c)}    $h      $c       ${(h-l)}');
+    if(y == null){
+      return null;
+    }
     var point = UIOPoint(
         candleData.timeMs.toDouble() + candleData.durationMs.toDouble() / 2.0,
         y,
         index: candleData.index);
-    //print('wr---------$y     ${(h - c)}    $h      $c');
     wrContext.onWrChange(period,y);
     return point;
   }
