@@ -49,6 +49,17 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
       }
     }
 
+    ///修复在durationMs时间内出现多个不同的时点
+    if(candleData.timeMs % this.durationMs != 0){
+      candleData = CandleData(
+          timeMs: ((candleData.timeMs ~/ this.durationMs + 1) * this.durationMs).toInt(),
+          open: candleData.open,
+          close: candleData.close,
+          high: candleData.high,
+          low: candleData.low,
+          volume: candleData.volume);
+    }
+
     var first = false;
     if ((candlesX.length <= 0) || (candleData.timeMs > candlesX.last)) {
       candlesX.add(candleData.timeMs.toDouble());
@@ -58,7 +69,13 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
     var extCandleData = ExtCandleData(
         candleData, index: this.candlesX.length - 1,
         durationMs: this.durationMs, first: first);
-    candleDataList.add(extCandleData);
+    if(first){
+      candleDataList.add(extCandleData);
+    } else {
+      candleDataList.last = extCandleData;
+    }
+
+    //print('extCandleData::::::index:${extCandleData.index}  first:${extCandleData.first}   candleDataList length:${candleDataList.length}');
 
     this.exdataStreamController.sink.add(extCandleData);
     if (isWaitingForInitData()) {

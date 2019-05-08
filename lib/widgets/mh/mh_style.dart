@@ -21,7 +21,7 @@ class MHStyle {
     this.labelBorderColor = const Color(0xFFDCAD0F),
     this.dashLineColor = const Color(0xBBDCAD0F),
     this.labelColor = const Color(0xFFDCAD0F),
-    this.lineWidth = 1.0,
+    this.lineWidth = 0.6,
     this.pointRadius = 2,
     this.dashLineGap = 5,
     this.dashLineWidth = 1.2,
@@ -30,7 +30,7 @@ class MHStyle {
 }
 
 MHStyle defaultMHStyle = MHStyle()
-  ..lineWidth = 1.0
+  ..lineWidth = 0.6
   ..pointRadius = 2
   ..lineColor = Colors.grey
   ..pointColor = Colors.white

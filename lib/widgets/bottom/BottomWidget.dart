@@ -1,5 +1,6 @@
 import 'package:candlesticks/widgets/graticule/graticule_net_widget.dart';
 import 'package:candlesticks/widgets/indicator_switch.dart';
+import 'package:candlesticks/widgets/kdj/kdj_view.dart';
 import 'package:candlesticks/widgets/rsi/rsi_view.dart';
 import 'package:candlesticks/widgets/wr/wr_view.dart';
 import 'package:flutter/material.dart';
@@ -32,13 +33,6 @@ class BottomWidget extends StatelessWidget {
         ),
         child: Stack(
           children: <Widget>[
-//                Positioned.fill(
-//                    top: 12,
-//                    child: CandlesWidget(
-//                      dataStream: extDataStream,
-//                      style: widget.candlesticksStyle,
-//                    )
-//                ),
             Positioned.fill(
               child: Visibility(
                 visible: true,
@@ -89,51 +83,26 @@ class BottomWidget extends StatelessWidget {
                 ),
               ),
             ),
+            Positioned.fill(
+              child: Visibility(
+                visible: defaultIndicatorSwitch.kdjSwitch,
+                maintainState: true,
+                child: AABBWidget(
+                  extDataStream: extDataStream,
+                  durationMs: durationMs,
+                  rangeX: rangeX,
+                  candlesticksStyle: widget.candlesticksStyle,
+                  paddingY: widget.candlesticksStyle.maStyle.cameraPaddingY,
+                  child: KdjWidget(
+                    dataStream: extDataStream,
+                    style: widget.candlesticksStyle,
+                    kdj: KDJ.J,
+                  ),
+                ),
+              ),
+            ),
           ],
         )
     );
-//    return AABBWidget(
-//        extDataStream: extDataStream,
-//        durationMs: durationMs,
-//        rangeX: rangeX,
-//        candlesticksStyle: widget.candlesticksStyle,
-//        paddingY: widget.candlesticksStyle.maStyle.cameraPaddingY,
-//        child: Container(
-//            decoration: BoxDecoration(
-//              color: widget.candlesticksStyle.backgroundColor,
-//            ),
-//            child: Stack(
-//              children: <Widget>[
-////                Positioned.fill(
-////                    top: 12,
-////                    child: CandlesWidget(
-////                      dataStream: extDataStream,
-////                      style: widget.candlesticksStyle,
-////                    )
-////                ),
-//                Positioned.fill(
-//                  child: Visibility(
-//                    visible: defaultIndicatorSwitch.rsiSwitch,
-//                    maintainState: true,
-//                    child: RsiWidget(
-//                      dataStream: extDataStream,
-//                      style: widget.candlesticksStyle,
-//                    ),
-//                  ),
-//                ),
-//                Positioned.fill(
-//                  child: Visibility(
-//                    visible: defaultIndicatorSwitch.wrSwitch,
-//                    maintainState: true,
-//                    child: WrWidget(
-//                      dataStream: extDataStream,
-//                      style: widget.candlesticksStyle,
-//                    ),
-//                  ),
-//                ),
-//              ],
-//            )
-//        )
-//    );
   }
 }

@@ -8,7 +8,6 @@ import 'package:candlesticks/2d/ui_animated_widget.dart';
 import 'package:candlesticks/2d/candle_data.dart';
 import 'package:candlesticks/widgets/aabb/aabb_context.dart';
 import 'package:candlesticks/widgets/candlesticks_style.dart';
-import 'dart:math';
 
 class WrView extends UIAnimatedView<UIOPath, UIOPoint> {
   List<double> _Hvalues;
@@ -25,6 +24,7 @@ class WrView extends UIAnimatedView<UIOPath, UIOPoint> {
 
     painter = new Paint()
       ..color = color
+      ..strokeWidth = 0.6
       ..style = PaintingStyle.stroke;
   }
 

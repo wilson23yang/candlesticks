@@ -28,6 +28,7 @@ class BollView extends UIAnimatedView<UIOPath, UIOPoint> {
 
     painter = new Paint()
       ..color = color
+      ..strokeWidth = 0.6
       ..style = PaintingStyle.stroke;
   }
 

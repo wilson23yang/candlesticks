@@ -1,3 +1,4 @@
+import 'package:candlesticks/widgets/kdj/kdj_style.dart';
 import 'package:candlesticks/widgets/mh/mh_style.dart';
 import 'package:candlesticks/widgets/rsi/rsi_style.dart';
 import 'package:candlesticks/widgets/wr/wr_style.dart';
@@ -82,6 +83,7 @@ CandlesticksStyle DefaultLightCandleStyle = CandlesticksStyle(
   mhStyle: defaultMHStyle,
   rsiStyle: defaultRsiStyle,
   wrStyle: defaultWrStyle,
+  kdjStyle: defaultKdjStyle,
 );
 
 class CandlesticksStyle {
@@ -105,6 +107,7 @@ class CandlesticksStyle {
   final MHStyle mhStyle;
   final RsiStyle rsiStyle;
   final WrStyle wrStyle;
+  final KdjStyle kdjStyle;
 
   CandlesticksStyle({this.minViewPortX,
     this.maxViewPortX,
@@ -115,6 +118,7 @@ class CandlesticksStyle {
     this.mhStyle,
     this.rsiStyle,
     this.wrStyle,
+    this.kdjStyle,
     this.cameraDuration,
     this.initAfterNData,
     this.backgroundColor,
