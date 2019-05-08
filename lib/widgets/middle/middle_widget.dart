@@ -1,4 +1,4 @@
-import 'package:candlesticks/widgets/graticule/graticule_net_widget.dart';
+import 'package:candlesticks/widgets/graticule/net_grid_widget.dart';
 import 'package:candlesticks/widgets/ma/ma_value_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -17,26 +17,27 @@ class MiddleWidget extends StatelessWidget {
     this.candlesticksStyle,
     this.rangeX,
     this.durationMs,
-  }) :super(key: key) {
+  }) : super(key: key) {
     this.volumeDataStream = extDataStream.map((ExtCandleData extCandleData) {
       double open = extCandleData.volume;
       double close = 0;
-      if(extCandleData.open <= extCandleData.close) {
+      if (extCandleData.open <= extCandleData.close) {
         close = extCandleData.volume;
         open = 0;
       }
-      CandleData candleData = CandleData(timeMs: extCandleData.timeMs,
+      CandleData candleData = CandleData(
+          timeMs: extCandleData.timeMs,
           open: open,
           close: close,
           high: extCandleData.volume,
           low: 0,
-          volume: extCandleData.volume
-      );
-      return ExtCandleData(candleData,
-          durationMs: extCandleData.durationMs,
-          first: extCandleData.first,
-          index: extCandleData.index,
-          getValue: (candleData) => candleData.volume,
+          volume: extCandleData.volume);
+      return ExtCandleData(
+        candleData,
+        durationMs: extCandleData.durationMs,
+        first: extCandleData.first,
+        index: extCandleData.index,
+        getValue: (candleData) => candleData.volume,
       );
     });
   }
@@ -50,40 +51,37 @@ class MiddleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var widget = this;
     return AABBWidget(
-        extDataStream: volumeDataStream,
-        durationMs: durationMs,
-        rangeX: rangeX,
-        candlesticksStyle: widget.candlesticksStyle,
-        paddingY: widget.candlesticksStyle.maStyle.cameraPaddingY,
-        child: Container(
-            decoration: BoxDecoration(
-              color: widget.candlesticksStyle.backgroundColor,
+      extDataStream: volumeDataStream,
+      durationMs: durationMs,
+      rangeX: rangeX,
+      candlesticksStyle: widget.candlesticksStyle,
+      paddingY: widget.candlesticksStyle.maStyle.cameraPaddingY,
+      child: Container(
+        decoration: BoxDecoration(
+          color: widget.candlesticksStyle.backgroundColor,
+        ),
+        child: Stack(
+          children: <Widget>[
+            Positioned.fill(
+                child: NetGridWidget(
+              candlesticksStyle: widget.candlesticksStyle,
+            )),
+            Positioned.fill(
+                top: 12,
+                child: CandlesWidget(
+                  dataStream: widget.volumeDataStream,
+                  style: widget.candlesticksStyle,
+                )),
+            Positioned.fill(
+              child: MaWidget(
+                dataStream: widget.volumeDataStream,
+                style: widget.candlesticksStyle,
+                maType: MaType.vol,
+              ),
             ),
-            child: Stack(
-              children: <Widget>[
-                Positioned.fill(
-                    child: GraticuleNetWidget(
-                      paddingY: 0.1,
-                      candlesticksStyle: widget.candlesticksStyle,
-                    )
-                ),
-                Positioned.fill(
-                  top: 12,
-                    child: CandlesWidget(
-                      dataStream: widget.volumeDataStream,
-                      style: widget.candlesticksStyle,
-                    )
-                ),
-                Positioned.fill(
-                  child: MaWidget(
-                    dataStream: widget.volumeDataStream,
-                    style: widget.candlesticksStyle,
-                    maType: MaType.vol,
-                  ),
-                ),
-              ],
-            )
-        )
+          ],
+        ),
+      ),
     );
   }
 }

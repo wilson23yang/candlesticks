@@ -153,7 +153,7 @@ abstract class AABBState extends State<AABBWidget>
       realMaxY = realMaxY + realMaxY * 0.1;
     }
 
-    //print('realMinY:$realMinY    realMaxY:$realMaxY');
+    //print('context hash code:${context.hashCode}   realMinY:$realMinY    realMaxY:$realMaxY');
 
     return UICamera(
         UIORect(UIOPoint(minX, realMinY), UIOPoint(maxX, realMaxY)));
