@@ -23,9 +23,9 @@ class WrStyle {
 WrStyle defaultWrStyle = WrStyle(
     cameraPaddingY: 0.2,
     shortPeriod: 0,
-    shortColor: Colors.yellowAccent,
+    shortColor: Colors.greenAccent,
     middlePeriod: 14,
-    middleColor: Colors.greenAccent,
+    middleColor: Colors.yellowAccent,
     longPeriod: 0,
     longColor: Colors.deepPurpleAccent,
     duration: Duration(milliseconds: 200)
