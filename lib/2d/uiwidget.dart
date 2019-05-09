@@ -17,7 +17,7 @@ class UIWidgetPainter extends CustomPainter {
 
     @override
     bool shouldRepaint(UIWidgetPainter oldUIPainter) {
-        return true;
+        return false;
     }
 }
 

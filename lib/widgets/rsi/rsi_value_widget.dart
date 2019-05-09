@@ -71,7 +71,7 @@ class RsiValuePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(RsiValuePainter oldPainter) {
-    return true;
+    return false;
   }
 }
 

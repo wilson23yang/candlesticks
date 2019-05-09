@@ -175,7 +175,7 @@ class TopFloatingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(TopFloatingPainter oldPainter) {
-    return this.lastCandleData != oldPainter.lastCandleData;
+    return false;
   }
 }
 

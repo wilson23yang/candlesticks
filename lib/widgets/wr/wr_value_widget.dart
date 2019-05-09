@@ -71,7 +71,7 @@ class WrValuePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(WrValuePainter oldPainter) {
-    return true;
+    return false;
   }
 }
 

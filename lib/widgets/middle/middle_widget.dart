@@ -67,11 +67,12 @@ class MiddleWidget extends StatelessWidget {
               candlesticksStyle: widget.candlesticksStyle,
             )),
             Positioned.fill(
-                top: 12,
-                child: CandlesWidget(
-                  dataStream: widget.volumeDataStream,
-                  style: widget.candlesticksStyle,
-                )),
+              top: 12,
+              child: CandlesWidget(
+                dataStream: widget.volumeDataStream,
+                style: widget.candlesticksStyle,
+              ),
+            ),
             Positioned.fill(
               child: MaWidget(
                 dataStream: widget.volumeDataStream,

@@ -85,7 +85,7 @@ class BollValuePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(BollValuePainter oldPainter) {
-    return true;
+    return false;
   }
 }
 

@@ -73,7 +73,7 @@ class KdjValuePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(KdjValuePainter oldPainter) {
-    return true;
+    return false;
   }
 }
 

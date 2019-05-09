@@ -85,7 +85,7 @@ class MaValuePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(MaValuePainter oldPainter) {
-    return true;
+    return false;
   }
 }
 
