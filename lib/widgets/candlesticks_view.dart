@@ -1,4 +1,9 @@
 import 'package:candlesticks/widgets/bottom/BottomWidget.dart';
+import 'package:candlesticks/widgets/floating/floating_widget.dart';
+import 'package:candlesticks/widgets/floating/last_point_floating_widget.dart';
+import 'package:candlesticks/widgets/floating/vertical_line_floating_widget.dart';
+import 'package:candlesticks/widgets/graticule/graticule_widget.dart';
+import 'package:candlesticks/widgets/graticule/time_graticule_widget.dart';
 import 'package:candlesticks/widgets/indicator_switch.dart';
 import 'package:candlesticks/widgets/line_type.dart';
 import 'package:candlesticks/widgets/mh/mh_top_widget.dart';
@@ -63,9 +68,55 @@ class CandlesticksView extends CandlesticksState {
               lastCandleData: candleDataList != null
                   ? candleDataList[candleDataList.length - 1]
                   : null,
-              child: widget.lineType == LineType.k_line
-                  ? _buildKLine()
-                  : _buildMhLine(),
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned.fill(
+                          child: widget.lineType == LineType.k_line
+                              ? _buildKLine()
+                              : _buildMhLine(),
+                        ),
+                        Positioned.fill(
+                          child: AABBWidget(
+                            extDataStream: exdataStream,
+                            durationMs: durationMs,
+                            rangeX: uiCameraAnimation?.value,
+                            candlesticksStyle: widget.candlesticksStyle,
+                            paddingY:
+                                widget.candlesticksStyle.candlesStyle.cameraPaddingY,
+                            child: VerticalLineFloatingWidget(
+                              style: widget.candlesticksStyle,
+                              extCandleData: extCandleData,
+                              touchPoint: touchPoint,
+                              durationMs: widget.durationMs,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(color: widget.candlesticksStyle.backgroundColor),
+                    width: MediaQuery.of(context).size.width,
+                    height: 12,
+                    child: AABBWidget(
+                      extDataStream: exdataStream,
+                      durationMs: durationMs,
+                      rangeX: uiCameraAnimation?.value,
+                      candlesticksStyle: widget.candlesticksStyle,
+                      paddingY:
+                      widget.candlesticksStyle.candlesStyle.cameraPaddingY,
+                      child: TimeGraticuleWidget(
+                        candlesticksStyle: widget.candlesticksStyle,
+                        paddingY: 0.1,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             );
           }),
     );
@@ -106,7 +157,6 @@ class CandlesticksView extends CandlesticksState {
   }
 
   Widget _buildMhLine() {
-
     return Column(children: <Widget>[
       Expanded(
           flex: 60,

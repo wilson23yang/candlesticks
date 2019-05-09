@@ -27,6 +27,7 @@ class NetGridPainter extends CustomPainter {
       paintX(canvas, size, width * i, painter);
     }
     paintY(canvas, size, 0, painter);
+    paintY(canvas, size, size.height, painter);
   }
 
   @override

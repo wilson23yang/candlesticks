@@ -16,32 +16,32 @@ class GraticulePainter extends CustomPainter {
   });
 
   void paintX(Canvas canvas, Size size, double x, Paint painter) {
-    var point = uiCamera.viewPortToWorldPoint(
-        uiCamera.screenToViewPortPoint(size, Offset(x, 0)));
-    var worldX = point.x;
+//    var point = uiCamera.viewPortToWorldPoint(
+//        uiCamera.screenToViewPortPoint(size, Offset(x, 0)));
+//    var worldX = point.x;
     canvas.drawLine(Offset(x, 0), Offset(x, size.height), painter);
 
 
-    var time = new DateTime.fromMillisecondsSinceEpoch(point.x.toInt()).toLocal();
-    String timeStr ="${time.month.toString().padLeft(2,'0')}-${time.day.toString().padLeft(2,'0')} ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
-
-    TextPainter textPainter = TextPainter(
-        textDirection: TextDirection.ltr,
-        maxLines: 1,
-        textAlign: TextAlign.end,
-        text: TextSpan(
-          text: timeStr,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 8.0,
-          ),
-        )
-    );
-
-    textPainter.layout();
-//    if((x - textPainter.width / 2 >= 0) && (x + textPainter.width / 2 <= size.width)) {
-      textPainter.paint(canvas, Offset(x - textPainter.width / 2, size.height - textPainter.height));
-//    }
+//    var time = new DateTime.fromMillisecondsSinceEpoch(point.x.toInt()).toLocal();
+//    String timeStr ="${time.month.toString().padLeft(2,'0')}-${time.day.toString().padLeft(2,'0')} ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
+//
+//    TextPainter textPainter = TextPainter(
+//        textDirection: TextDirection.ltr,
+//        maxLines: 1,
+//        textAlign: TextAlign.end,
+//        text: TextSpan(
+//          text: timeStr,
+//          style: TextStyle(
+//            color: Colors.white,
+//            fontSize: 8.0,
+//          ),
+//        )
+//    );
+//
+//    textPainter.layout();
+////    if((x - textPainter.width / 2 >= 0) && (x + textPainter.width / 2 <= size.width)) {
+//      textPainter.paint(canvas, Offset(x - textPainter.width / 2, size.height - textPainter.height));
+////    }
   }
 
   void paintY(Canvas canvas, Size size, double y, Paint painter,{bool showText = true}) {

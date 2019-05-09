@@ -87,7 +87,7 @@ class TopFloatingPainter extends CustomPainter {
 
     int precision = StringUtil.getPrecision(extCandleData.open,defaultPrecision:4);
 
-    var p = paintLabel(canvas, size, "时间", timeStamp, leftTop, width);
+    var p = paintLabel(canvas, size, "时间", timeStamp, Offset(leftTop.dx, leftTop.dy), width);
     p = paintLabel(
         canvas, size, "开", StringUtil.trimZero(extCandleData.open.toStringAsFixed(style.fractionDigits), precision), p, width,
         real: false);
@@ -107,7 +107,7 @@ class TopFloatingPainter extends CustomPainter {
     var linePainter = Paint();
     linePainter.color = Colors.black.withOpacity(0.5);
     linePainter.style = PaintingStyle.fill;
-    canvas.drawRect(Rect.fromPoints(leftTop, rightBottom), linePainter);
+    canvas.drawRect(Rect.fromPoints(Offset(leftTop.dx - 5, leftTop.dy - 3), Offset(rightBottom.dx + 5, rightBottom.dy + 3)), linePainter);
 
     p = paintLabel(canvas, size, "时间", timeStamp, leftTop, width);
     p = paintLabel(
@@ -124,31 +124,32 @@ class TopFloatingPainter extends CustomPainter {
     var backgroundPainter = Paint();
     backgroundPainter.color = style.floatingStyle.backGroundColor;
     backgroundPainter.style = PaintingStyle.stroke;
-    canvas.drawRect(Rect.fromPoints(leftTop, rightBottom), backgroundPainter);
+    canvas.drawRect(Rect.fromPoints(Offset(leftTop.dx - 5, leftTop.dy - 3), Offset(rightBottom.dx + 5, rightBottom.dy + 3)), backgroundPainter);
 
     var borderPainter = Paint();
     borderPainter.color = style.floatingStyle.borderColor;
     borderPainter.style = PaintingStyle.stroke;
-    canvas.drawRect(Rect.fromPoints(leftTop, rightBottom), borderPainter);
+    canvas.drawRect(Rect.fromPoints(Offset(leftTop.dx - 5, leftTop.dy - 3), Offset(rightBottom.dx + 5, rightBottom.dy + 3)), borderPainter);
 
     var crossPainter = Paint();
     crossPainter.color = style.floatingStyle.crossColor;
+    crossPainter.strokeWidth = 0.6;
     crossPainter.style = PaintingStyle.stroke;
     var touchWorldPoint = UIOPoint(extCandleData.timeMs + extCandleData.durationMs / 2, extCandleData.close);
     var touchScenePoint = uiCamera.viewPortToScreenPoint(size, uiCamera.worldToViewPortPoint(touchWorldPoint));
     var realTouchPoint = Offset(touchScenePoint.dx, touchScenePoint.dy);
-    canvas.drawLine(
-        Offset(touchScenePoint.dx, 0), Offset(touchScenePoint.dx, size.height),
-        crossPainter);
+//    canvas.drawLine(
+//        Offset(touchScenePoint.dx, 0), Offset(touchScenePoint.dx, size.height),
+//        crossPainter);
     canvas.drawLine(Offset(0, realTouchPoint.dy), Offset(size.width, realTouchPoint.dy),
         crossPainter);
     Paint maxCircle = new Paint();
     maxCircle
-      ..shader = ui.Gradient.radial(realTouchPoint, 3, [
+      ..shader = ui.Gradient.radial(realTouchPoint, 5, [
         Colors.white.withOpacity(0.8),
         Colors.white.withOpacity(0.1),
       ], [0.0, 1.0], TileMode.clamp);
-    canvas.drawCircle(realTouchPoint, 3, maxCircle);
+    canvas.drawCircle(realTouchPoint, 5, maxCircle);
   }
 
   @override
