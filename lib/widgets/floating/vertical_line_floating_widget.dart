@@ -73,6 +73,11 @@ class VerticalLineFloatingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(VerticalLineFloatingPainter oldPainter) {
+    return this?.extCandleData?.durationMs != oldPainter?.extCandleData?.durationMs;
+  }
+
+  @override
+  bool shouldRebuildSemantics(VerticalLineFloatingPainter oldDelegate) {
     return false;
   }
 }

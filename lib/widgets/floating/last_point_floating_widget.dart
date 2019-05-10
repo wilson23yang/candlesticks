@@ -7,7 +7,6 @@ import 'package:candlesticks/widgets/aabb/aabb_context.dart';
 import 'package:candlesticks/widgets/candlesticks_style.dart';
 
 class TopFloatingPainter extends CustomPainter {
-
   final ExtCandleData lastCandleData;
   final UICamera uiCamera;
   final CandlesticksStyle style;
@@ -34,7 +33,6 @@ class TopFloatingPainter extends CustomPainter {
     this.sizeAnimation,
   });
 
-
   TextPainter calLabel(Canvas canvas, Size size, String text) {
     TextPainter leftTextPainter = TextPainter(
         textDirection: TextDirection.ltr,
@@ -46,42 +44,41 @@ class TopFloatingPainter extends CustomPainter {
             color: style.mhStyle.labelColor,
             fontSize: style.mhStyle.textSize,
           ),
-        )
-    );
+        ));
     leftTextPainter.layout();
     return leftTextPainter;
   }
-
-
 
   @override
   void paint(Canvas canvas, Size size) {
     if (lastCandleData == null || uiCamera == null) {
       return;
     }
-    var touchWorldPoint = UIOPoint(lastCandleData.timeMs + lastCandleData.durationMs / 2, lastCandleData.close);
-    var touchScenePoint = uiCamera.viewPortToScreenPoint(size, uiCamera.worldToViewPortPoint(touchWorldPoint));
+    var touchWorldPoint = UIOPoint(
+        lastCandleData.timeMs + lastCandleData.durationMs / 2,
+        lastCandleData.close);
+    var touchScenePoint = uiCamera.viewPortToScreenPoint(
+        size, uiCamera.worldToViewPortPoint(touchWorldPoint));
     var realPoint = Offset(touchScenePoint.dx, touchScenePoint.dy);
 
-
-    if(showLabel){
-      if(lastLabelTextPainter == null){
+    if (showLabel) {
+      if (lastLabelTextPainter == null) {
         lastLabelTextPainter = Paint();
         lastLabelTextPainter.color = style.mhStyle.labelColor;
         lastLabelTextPainter.style = PaintingStyle.stroke;
       }
-      if(lastBorderPainter == null){
+      if (lastBorderPainter == null) {
         lastBorderPainter = Paint();
         lastBorderPainter.color = style.mhStyle.labelBorderColor;
         lastBorderPainter.strokeWidth = 1.2;
         lastBorderPainter.style = PaintingStyle.stroke;
       }
-      if(lastBorderBgPainter == null){
+      if (lastBorderBgPainter == null) {
         lastBorderBgPainter = Paint();
         lastBorderBgPainter.color = style.mhStyle.labelBgColor;
         lastBorderBgPainter.style = PaintingStyle.fill;
       }
-      if(dashLinePainter == null){
+      if (dashLinePainter == null) {
         dashLinePainter = Paint();
         dashLinePainter.strokeWidth = style.mhStyle.dashLineWidth;
         dashLinePainter.color = style.mhStyle.dashLineColor;
@@ -97,90 +94,116 @@ class TopFloatingPainter extends CustomPainter {
       double aGap = 8;
       double vGap = 3;
 
-      if(realPoint.dx > size.width * 4.0 / 5.0){//显示在右边
+      if (realPoint.dx > size.width * 4.0 / 5.0) {
+        //显示在右边
         //print('显示在右边');
         double dashLen = 100;
 
         Path path = Path();
         double rightPointXMax = realPoint.dx;
         double rightPointYMax = realPoint.dy;
-        if(rightPointXMax > size.width){
+        if (rightPointXMax > size.width) {
           rightPointXMax = size.width;
         }
-        if(rightPointYMax > size.height){
-          rightPointYMax = size.height - textWidth/2 - vGap ;
+        if (rightPointYMax > size.height) {
+          rightPointYMax = size.height - textWidth / 2 - vGap;
         }
-        if(rightPointYMax < 0){
-          rightPointYMax = textWidth/2 + vGap ;
+        if (rightPointYMax < 0) {
+          rightPointYMax = textWidth / 2 + vGap;
         }
-        Offset originPoint = Offset(rightPointXMax- dashLen - lGap - textWidth - rGap - aGap, rightPointYMax - textHeight/2.0 - vGap);
+        Offset originPoint = Offset(
+            rightPointXMax - dashLen - lGap - textWidth - rGap - aGap,
+            rightPointYMax - textHeight / 2.0 - vGap);
         path.moveTo(originPoint.dx, originPoint.dy);
         path.lineTo(originPoint.dx + lGap + textWidth + rGap, originPoint.dy);
-        path.lineTo(originPoint.dx + lGap + textWidth + rGap + aGap, originPoint.dy + textHeight/2.0 + vGap);
-        path.lineTo(originPoint.dx + lGap + textWidth + rGap, originPoint.dy + textHeight + 2 * vGap);
+        path.lineTo(originPoint.dx + lGap + textWidth + rGap + aGap,
+            originPoint.dy + textHeight / 2.0 + vGap);
+        path.lineTo(originPoint.dx + lGap + textWidth + rGap,
+            originPoint.dy + textHeight + 2 * vGap);
         path.lineTo(originPoint.dx, originPoint.dy + textHeight + 2 * vGap);
         path.close();
         canvas.drawPath(path, lastBorderPainter);
         canvas.drawPath(path, lastBorderBgPainter);
 
-        labelText.paint(canvas, Offset(rightPointXMax - dashLen - textWidth - rGap - aGap, rightPointYMax - textHeight/2.0));
+        labelText.paint(
+            canvas,
+            Offset(rightPointXMax - dashLen - textWidth - rGap - aGap,
+                rightPointYMax - textHeight / 2.0));
 
         Offset p1 = Offset(size.width, rightPointYMax);
         Offset p2 = Offset(rightPointXMax - dashLen, rightPointYMax);
-        CanvasUtil.drawDash(canvas, size, dashLinePainter, p1, p2, style.mhStyle.dashLineGap);
+        CanvasUtil.drawDash(
+            canvas, size, dashLinePainter, p1, p2, style.mhStyle.dashLineGap);
 
         Offset p3 = Offset(0, rightPointYMax);
         Offset p4 = Offset(originPoint.dx, rightPointYMax);
-        CanvasUtil.drawDash(canvas, size, dashLinePainter, p3, p4, style.mhStyle.dashLineGap);
-
-      } else {//显示在左边
+        CanvasUtil.drawDash(
+            canvas, size, dashLinePainter, p3, p4, style.mhStyle.dashLineGap);
+      } else {
+        //显示在左边
         //print('显示在左边');
 
         Path path = Path();
-        double rightPointXMax = size.width-2;
+        double rightPointXMax = size.width - 2;
         double rightPointYMax = realPoint.dy;
-        if(rightPointYMax > size.height){
-          rightPointYMax = size.height - textWidth/2 - vGap ;
+        if (rightPointYMax > size.height) {
+          rightPointYMax = size.height - textWidth / 2 - vGap;
         }
-        if(rightPointYMax < 0){
-          rightPointYMax = textWidth/2 + vGap ;
+        if (rightPointYMax < 0) {
+          rightPointYMax = textWidth / 2 + vGap;
         }
-        Offset originPoint = Offset(rightPointXMax, rightPointYMax - textHeight/2.0 - vGap);
+        Offset originPoint =
+            Offset(rightPointXMax, rightPointYMax - textHeight / 2.0 - vGap);
         path.moveTo(originPoint.dx, originPoint.dy);
         path.lineTo(originPoint.dx - lGap - textWidth - rGap, originPoint.dy);
-        path.lineTo(originPoint.dx - lGap - textWidth - rGap - aGap, originPoint.dy + textHeight/2.0 + vGap);
-        path.lineTo(originPoint.dx - lGap - textWidth - rGap, originPoint.dy + textHeight + 2 * vGap);
+        path.lineTo(originPoint.dx - lGap - textWidth - rGap - aGap,
+            originPoint.dy + textHeight / 2.0 + vGap);
+        path.lineTo(originPoint.dx - lGap - textWidth - rGap,
+            originPoint.dy + textHeight + 2 * vGap);
         path.lineTo(originPoint.dx, originPoint.dy + textHeight + 2 * vGap);
         path.close();
         canvas.drawPath(path, lastBorderPainter);
         canvas.drawPath(path, lastBorderBgPainter);
 
-        labelText.paint(canvas, Offset(rightPointXMax - textWidth - rGap, rightPointYMax - textHeight/2.0));
+        labelText.paint(
+            canvas,
+            Offset(rightPointXMax - textWidth - rGap,
+                rightPointYMax - textHeight / 2.0));
 
-        Offset p1 = Offset((originPoint.dx - lGap - textWidth - rGap - aGap), rightPointYMax);
+        Offset p1 = Offset(
+            (originPoint.dx - lGap - textWidth - rGap - aGap), rightPointYMax);
         Offset p2 = Offset(realPoint.dx, rightPointYMax);
-        CanvasUtil.drawDash(canvas, size, dashLinePainter, p1, p2, style.mhStyle.dashLineGap);
+        CanvasUtil.drawDash(
+            canvas, size, dashLinePainter, p1, p2, style.mhStyle.dashLineGap);
       }
     }
 
-    if(showPoint){
-      if(lastPointPainter == null){
+    if (showPoint) {
+      if (lastPointPainter == null) {
         lastPointPainter = Paint();
-        lastPointPainter.color = style.mhStyle.pointColor.withOpacity(opacityAnimation.value);
+        lastPointPainter.color =
+            style.mhStyle.pointColor.withOpacity(opacityAnimation.value);
         lastPointPainter.style = PaintingStyle.fill;
       }
-      canvas.drawCircle(realPoint, style.mhStyle.pointRadius + sizeAnimation.value, lastPointPainter);
+      canvas.drawCircle(realPoint,
+          style.mhStyle.pointRadius + sizeAnimation.value, lastPointPainter);
     }
   }
 
   @override
   bool shouldRepaint(TopFloatingPainter oldPainter) {
+    return this?.lastCandleData?.durationMs !=
+            oldPainter?.lastCandleData?.durationMs ||
+        this?.lastCandleData?.close != oldPainter?.lastCandleData?.close;
+  }
+
+  @override
+  bool shouldRebuildSemantics(TopFloatingPainter oldDelegate) {
     return false;
   }
 }
 
 class LastPointFloatingWidget extends StatefulWidget {
-
   LastPointFloatingWidget({
     Key key,
     this.style,
@@ -188,7 +211,7 @@ class LastPointFloatingWidget extends StatefulWidget {
     this.lastCandleData,
     this.showPoint = true,
     this.showLabel = true,
-  }) :super(key: key);
+  }) : super(key: key);
 
   final CandlesticksStyle style;
   final double durationMs;
@@ -197,10 +220,12 @@ class LastPointFloatingWidget extends StatefulWidget {
   final bool showLabel;
 
   @override
-  _LastPointFloatingWidgetState createState() => _LastPointFloatingWidgetState();
+  _LastPointFloatingWidgetState createState() =>
+      _LastPointFloatingWidgetState();
 }
 
-class _LastPointFloatingWidgetState extends State<LastPointFloatingWidget> with SingleTickerProviderStateMixin {
+class _LastPointFloatingWidgetState extends State<LastPointFloatingWidget>
+    with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation opacityAnimation;
   Animation sizeAnimation;
@@ -208,21 +233,25 @@ class _LastPointFloatingWidgetState extends State<LastPointFloatingWidget> with 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this,duration: const Duration(seconds: 1));
-    CurvedAnimation ca = CurvedAnimation(parent: _controller, curve: Curves.linear,);
-    opacityAnimation = Tween(begin: 0.8,end: 1.0).animate(ca);
-    sizeAnimation = Tween(begin: 0.0,end: 1.5).animate(ca);
-    opacityAnimation.addListener((){
-      if(opacityAnimation.value == 1.0){
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    CurvedAnimation ca = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.linear,
+    );
+    opacityAnimation = Tween(begin: 0.8, end: 1.0).animate(ca);
+    sizeAnimation = Tween(begin: 0.0, end: 1.5).animate(ca);
+    opacityAnimation.addListener(() {
+      if (opacityAnimation.value == 1.0) {
         _controller.reverse();
-      } else if(opacityAnimation.value == 0.8){
+      } else if (opacityAnimation.value == 0.8) {
         _controller.forward();
       }
     });
-    sizeAnimation.addListener((){
-      if(sizeAnimation.value == 1.5){
+    sizeAnimation.addListener(() {
+      if (sizeAnimation.value == 1.5) {
         _controller.reverse();
-      } else if(sizeAnimation.value == 0.0){
+      } else if (sizeAnimation.value == 0.0) {
         _controller.forward();
       }
     });
@@ -240,9 +269,7 @@ class _LastPointFloatingWidgetState extends State<LastPointFloatingWidget> with 
     if (widget.lastCandleData == null) {
       return Container();
     }
-    var uiCamera = AABBContext
-        .of(context)
-        .uiCamera;
+    var uiCamera = AABBContext.of(context).uiCamera;
     return CustomPaint(
       painter: TopFloatingPainter(
         style: widget.style,

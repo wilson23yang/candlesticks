@@ -1,3 +1,4 @@
+import 'package:candlesticks/widgets/candlesticks_context_widget.dart';
 import 'package:candlesticks/widgets/rsi/rsi_context.dart';
 import 'package:candlesticks/widgets/rsi/rsi_value_data.dart';
 import 'package:candlesticks/widgets/rsi/rsi_value_widget.dart';
@@ -15,9 +16,15 @@ class RsiView extends UIAnimatedView<UIOPath, UIOPoint> {
   Color color;
   int period = 20;
 
+  Map<int, double> rsi;
+
   RsiContext rsiContext;
 
-  RsiView({this.color, this.period}) : super(animationCount: 2) {
+  RsiView({
+    @required this.color,
+    @required this.period,
+    @required this.rsi,
+  }) : super(animationCount: 2) {
     this._values = List<double>();
 
     painter = new Paint()
@@ -74,19 +81,20 @@ class RsiView extends UIAnimatedView<UIOPath, UIOPoint> {
     double gain = gainAverage(period);
     double decline = declineAverage(period);
 
-    if(gain.abs() + decline.abs() == 0){
+    if (gain.abs() + decline.abs() == 0) {
       return null;
     }
 
     double y = gain * 100 / (gain.abs() + decline.abs());
-    if(y == null){
+    if (y == null) {
       return null;
     }
     var point = UIOPoint(
         candleData.timeMs.toDouble() + candleData.durationMs.toDouble() / 2.0,
         y,
         index: candleData.index);
-    rsiContext.onRsiChange(period,y);
+    rsiContext.onRsiChange(period, y);
+    rsi[candleData.index] = y;
     return point;
   }
 
@@ -123,65 +131,131 @@ class RsiView extends UIAnimatedView<UIOPath, UIOPoint> {
 }
 
 class RsiWidgetState extends State<RsiWidget> {
-  AABBContext candlesticksContext;
+  AABBContext aabbContext;
+  CandlesticksContext candlesticksContext;
+  Map<int, double> rsiShort = <int, double>{};
+  Map<int, double> rsiMiddle = <int, double>{};
+  Map<int, double> rsiLong = <int, double>{};
+  var lastRsiShort;
+  var lastRsiMiddle;
+  var lastRsiLong;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    candlesticksContext = AABBContext.of(context);
+    aabbContext = AABBContext.of(context);
+    candlesticksContext = CandlesticksContext.of(context);
   }
 
   RsiValueData rsiValueData = RsiValueData();
 
   onRsiChange(int period, double rsi) {
+    if(widget.style.rsiStyle.shortPeriod == period){
+      lastRsiShort = rsi;
+    }
+    if(widget.style.rsiStyle.middlePeriod == period){
+      lastRsiMiddle = rsi;
+    }
+    if(widget.style.rsiStyle.longPeriod == period){
+      lastRsiLong = rsi;
+    }
+    if (candlesticksContext?.extCandleData != null) {
+      return;
+    }
     rsiValueData.put(period, rsi);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    var uiCamera = candlesticksContext?.uiCamera;
+    setThisPositionRsi();
+    var uiCamera = aabbContext?.uiCamera;
     return RsiContext(
-        onRsiChange: onRsiChange,
-        child: Stack(
-          children: <Widget>[
-            Positioned.fill(
-                child: UIAnimatedWidget<UIOPath, UIOPoint>(
+      onRsiChange: onRsiChange,
+      child: Stack(
+        children: <Widget>[
+          Positioned.fill(
+            child: UIAnimatedWidget<UIOPath, UIOPoint>(
               dataStream: widget.dataStream,
               uiCamera: uiCamera,
               duration: widget.style.rsiStyle.duration,
               state: () => RsiView(
                     color: widget.style.rsiStyle.shortColor,
                     period: widget.style.rsiStyle.shortPeriod,
+                    rsi: rsiShort,
                   ),
-            )),
-            Positioned.fill(
-                child: UIAnimatedWidget<UIOPath, UIOPoint>(
+            ),
+          ),
+          Positioned.fill(
+            child: UIAnimatedWidget<UIOPath, UIOPoint>(
               dataStream: widget.dataStream,
               uiCamera: uiCamera,
               duration: widget.style.rsiStyle.duration,
               state: () => RsiView(
                     color: widget.style.rsiStyle.middleColor,
                     period: widget.style.rsiStyle.middlePeriod,
+                    rsi: rsiMiddle,
                   ),
-            )),
-            Positioned.fill(
-                child: UIAnimatedWidget<UIOPath, UIOPoint>(
+            ),
+          ),
+          Positioned.fill(
+            child: UIAnimatedWidget<UIOPath, UIOPoint>(
               dataStream: widget.dataStream,
               uiCamera: uiCamera,
               duration: widget.style.rsiStyle.duration,
               state: () => RsiView(
-                    color: widget.style.rsiStyle.longColor,
-                    period: widget.style.rsiStyle.longPeriod,
-                  ),
-            )),
-            Positioned.fill(
-                child: RsiValueWidget(
+                  color: widget.style.rsiStyle.longColor,
+                  period: widget.style.rsiStyle.longPeriod,
+                  rsi: rsiLong),
+            ),
+          ),
+          Positioned.fill(
+            child: RsiValueWidget(
               rsiValueData: rsiValueData,
               style: widget.style,
-            )),
-          ],
-        ));
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  ///设置指定时间点的RSI
+  void setThisPositionRsi(){
+    if (candlesticksContext?.extCandleData != null) {
+      if(rsiShort.containsKey(candlesticksContext.extCandleData.index)){
+        rsiValueData.put(widget.style.rsiStyle.shortPeriod, rsiShort[candlesticksContext.extCandleData.index]);
+      } else {
+        rsiValueData.remove(widget.style.rsiStyle.shortPeriod);
+      }
+      if(rsiMiddle.containsKey(candlesticksContext.extCandleData.index)){
+        rsiValueData.put(widget.style.rsiStyle.middlePeriod, rsiMiddle[candlesticksContext.extCandleData.index]);
+      } else {
+        rsiValueData.remove(widget.style.rsiStyle.middlePeriod);
+      }
+      if(rsiLong.containsKey(candlesticksContext.extCandleData.index)){
+        rsiValueData.put(widget.style.rsiStyle.longPeriod, rsiLong[candlesticksContext.extCandleData.index]);
+      } else {
+        rsiValueData.remove(widget.style.rsiStyle.longPeriod);
+      }
+    } else {
+      if(lastRsiShort != null){
+        rsiValueData.put(widget.style.rsiStyle.shortPeriod, lastRsiShort);
+      } else {
+        rsiValueData.remove(widget.style.rsiStyle.shortPeriod);
+      }
+      if(lastRsiMiddle != null){
+        rsiValueData.put(widget.style.rsiStyle.middlePeriod, lastRsiMiddle);
+      } else {
+        rsiValueData.remove(widget.style.rsiStyle.middlePeriod);
+      }
+      if(lastRsiLong != null){
+        rsiValueData.put(widget.style.rsiStyle.longPeriod, lastRsiLong);
+      } else {
+        rsiValueData.remove(widget.style.rsiStyle.longPeriod);
+      }
+    }
+    setState(() {});
   }
 }
 

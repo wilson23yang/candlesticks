@@ -73,6 +73,21 @@ class KdjValuePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(KdjValuePainter oldPainter) {
+    if(this?.kdjValueData?.get(KDJ.K) != oldPainter?.kdjValueData?.get(KDJ.K)){
+      return true;
+    }
+    if(this?.kdjValueData?.get(KDJ.D) != oldPainter?.kdjValueData?.get(KDJ.D)){
+      return true;
+    }
+    if(this?.kdjValueData?.get(KDJ.J) != oldPainter?.kdjValueData?.get(KDJ.J)){
+      return true;
+    }
+    return false;
+  }
+
+
+  @override
+  bool shouldRebuildSemantics(KdjValuePainter oldDelegate) {
     return false;
   }
 }

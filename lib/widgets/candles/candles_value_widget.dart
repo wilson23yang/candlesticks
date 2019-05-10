@@ -72,6 +72,11 @@ class CandlesValuePainter extends CustomPainter {
   bool shouldRepaint(CandlesValuePainter oldPainter) {
     return this.point != oldPainter.point || this.uiCamera != oldPainter.uiCamera;
   }
+
+  @override
+  bool shouldRebuildSemantics(CandlesValuePainter oldDelegate) {
+    return false;
+  }
 }
 
 class CandlesValueWidget extends StatelessWidget {

@@ -5,11 +5,12 @@ import 'package:candlesticks/2d/candle_data.dart';
 import 'package:candlesticks/2d/uiobjects/uio_rect.dart';
 
 class CandlesticksContext extends InheritedWidget {
-  final List<double> candlesX;
+  final List<double> candlesX;//K线X坐标点
   final Function(ExtCandleData candleData) onCandleDataFinish;
-  final ExtCandleData extCandleData;
-  final Offset touchPoint;
-  final ExtCandleData lastCandleData;
+  final ExtCandleData extCandleData;//点击点的K线数据
+  final Offset touchPoint;//点击点坐标
+  final ExtCandleData lastCandleData;//最后一个K线数据
+  bool touching;
 
   CandlesticksContext({
     Key key,
@@ -19,6 +20,7 @@ class CandlesticksContext extends InheritedWidget {
     @required this.extCandleData,
     @required this.touchPoint,
     @required this.lastCandleData,
+    @required this.touching,
   }) : super(key: key, child: child);
 
   static CandlesticksContext of(BuildContext context) {

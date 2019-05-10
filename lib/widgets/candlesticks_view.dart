@@ -1,21 +1,14 @@
 import 'package:candlesticks/widgets/bottom/BottomWidget.dart';
-import 'package:candlesticks/widgets/floating/floating_widget.dart';
-import 'package:candlesticks/widgets/floating/last_point_floating_widget.dart';
 import 'package:candlesticks/widgets/floating/vertical_line_floating_widget.dart';
-import 'package:candlesticks/widgets/graticule/graticule_widget.dart';
 import 'package:candlesticks/widgets/graticule/time_graticule_widget.dart';
 import 'package:candlesticks/widgets/indicator_switch.dart';
 import 'package:candlesticks/widgets/line_type.dart';
 import 'package:candlesticks/widgets/mh/mh_top_widget.dart';
 import 'package:flutter/material.dart';
-
 import 'package:candlesticks/widgets/candlesticks_state.dart';
-import 'package:candlesticks/widgets/candles/candles_widget.dart';
-import 'package:candlesticks/widgets/ma/ma_view.dart';
 import 'package:candlesticks/2d/candle_data.dart';
 import 'package:candlesticks/widgets/candlesticks_context_widget.dart';
 import 'package:candlesticks/widgets/aabb/aabb_widget.dart';
-import 'package:candlesticks/widgets/aabb/aabb_range.dart';
 import 'package:candlesticks/widgets/top/top_widget.dart';
 import 'package:candlesticks/widgets/middle/middle_widget.dart';
 
@@ -65,6 +58,7 @@ class CandlesticksView extends CandlesticksState {
               candlesX: candlesX,
               extCandleData: extCandleData,
               touchPoint: touchPoint,
+              touching: touching,
               lastCandleData: candleDataList != null
                   ? candleDataList[candleDataList.length - 1]
                   : null,
@@ -112,6 +106,7 @@ class CandlesticksView extends CandlesticksState {
                       child: TimeGraticuleWidget(
                         candlesticksStyle: widget.candlesticksStyle,
                         paddingY: 0.1,
+                        touchPoint:touchPoint,
                       ),
                     ),
                   ),

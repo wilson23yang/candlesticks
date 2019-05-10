@@ -96,18 +96,18 @@ class CandlesWidgetState extends State<CandlesWidget> {
                   style: widget.style,
                 ),
           )),
-          Positioned.fill(
-            child: CandlesValueWidget(
-              point: aabbContext.minPoint,
-              style: widget.style,
-            ),
-          ),
-          Positioned.fill(
-            child: CandlesValueWidget(
-              style: widget.style,
-              point: aabbContext.maxPoint,
-            ),
-          )
+//          Positioned.fill(
+//            child: CandlesValueWidget(
+//              point: aabbContext.minPoint,
+//              style: widget.style,
+//            ),
+//          ),
+//          Positioned.fill(
+//            child: CandlesValueWidget(
+//              style: widget.style,
+//              point: aabbContext.maxPoint,
+//            ),
+//          )
         ]);
   }
 

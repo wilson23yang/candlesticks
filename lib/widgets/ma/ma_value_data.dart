@@ -1,9 +1,8 @@
-
 class MaValueData {
-  final double currentValue;
-  final double shortValue;
-  final double middleValue;
-  final double longValue;
+  double currentValue;
+  double shortValue;
+  double middleValue;
+  double longValue;
 
   MaValueData({
     this.currentValue,
@@ -12,4 +11,3 @@ class MaValueData {
     this.longValue,
   });
 }
-

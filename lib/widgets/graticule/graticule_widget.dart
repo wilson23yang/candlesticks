@@ -100,6 +100,11 @@ class GraticulePainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) {
     return false;
   }
+
+  @override
+  bool shouldRebuildSemantics(CustomPainter oldDelegate) {
+    return false;
+  }
 }
 
 class GraticuleWidget extends StatelessWidget {

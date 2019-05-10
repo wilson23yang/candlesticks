@@ -85,6 +85,20 @@ class MaValuePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(MaValuePainter oldPainter) {
+    if(maValueData?.shortValue != oldPainter?.maValueData?.shortValue){
+      return true;
+    }
+    if(maValueData?.middleValue != oldPainter?.maValueData?.middleValue){
+      return true;
+    }
+    if(maValueData?.longValue != oldPainter?.maValueData?.longValue){
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  bool shouldRebuildSemantics(MaValuePainter oldDelegate) {
     return false;
   }
 }

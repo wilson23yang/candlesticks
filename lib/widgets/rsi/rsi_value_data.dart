@@ -18,5 +18,11 @@ class RsiValueData {
   bool containsKey(int key){
     return _map.containsKey(key);
   }
+
+  void remove(int key){
+    if(containsKey(key)){
+      _map.remove(key);
+    }
+  }
 }
 

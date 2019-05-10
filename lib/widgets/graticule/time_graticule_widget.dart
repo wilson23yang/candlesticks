@@ -8,11 +8,13 @@ class TimeGraticulePainter extends CustomPainter {
   final UICamera uiCamera;
   final double paddingY;
   final CandlesticksStyle candlesticksStyle;
+  final Offset touchPoint;
 
   TimeGraticulePainter({
     this.uiCamera,
     this.paddingY,
     this.candlesticksStyle,
+    this.touchPoint
   });
 
   void paintX(Canvas canvas, Size size, double x, Paint painter) {
@@ -54,7 +56,12 @@ class TimeGraticulePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
+  bool shouldRepaint(TimeGraticulePainter oldDelegate) {
+    return this?.touchPoint?.dx != oldDelegate?.touchPoint?.dx;
+  }
+
+  @override
+  bool shouldRebuildSemantics(TimeGraticulePainter oldDelegate) {
     return false;
   }
 }
@@ -64,10 +71,12 @@ class TimeGraticuleWidget extends StatelessWidget {
     Key key,
     this.candlesticksStyle,
     this.paddingY,
+    this.touchPoint,
   }) : super(key: key);
 
   final double paddingY;
   final CandlesticksStyle candlesticksStyle;
+  final Offset touchPoint;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +91,7 @@ class TimeGraticuleWidget extends StatelessWidget {
           uiCamera: uiCamera,
           paddingY: paddingY,
           candlesticksStyle: this.candlesticksStyle,
+          touchPoint:touchPoint,
         ),
         size: Size.infinite
     );

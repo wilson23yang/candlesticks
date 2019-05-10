@@ -1,3 +1,4 @@
+import 'package:candlesticks/widgets/candlesticks_context_widget.dart';
 import 'package:candlesticks/widgets/wr/wr_context.dart';
 import 'package:candlesticks/widgets/wr/wr_value_data.dart';
 import 'package:candlesticks/widgets/wr/wr_value_widget.dart';
@@ -15,10 +16,12 @@ class WrView extends UIAnimatedView<UIOPath, UIOPoint> {
   Paint painter;
   Color color;
   int period = 20;
+  Map<int, double> wrMap;
 
   WrContext wrContext;
 
-  WrView({this.color, this.period}) : super(animationCount: 2) {
+  WrView({@required this.color, @required this.period, @required this.wrMap})
+      : super(animationCount: 2) {
     this._Hvalues = List<double>();
     this._Lvalues = List<double>();
 
@@ -30,7 +33,8 @@ class WrView extends UIAnimatedView<UIOPath, UIOPoint> {
 
   ///
   double getHigh(int period) {
-    List<double> sub = _Hvalues.sublist(_Hvalues.length - period, _Hvalues.length);
+    List<double> sub =
+        _Hvalues.sublist(_Hvalues.length - period, _Hvalues.length);
     sub.sort();
     //print('getHigh sub list:$sub                ${sub.last}');
     return sub.last;
@@ -38,7 +42,8 @@ class WrView extends UIAnimatedView<UIOPath, UIOPoint> {
 
   ///
   double getLow(int period) {
-    List<double> sub = _Lvalues.sublist(_Lvalues.length - period, _Lvalues.length);
+    List<double> sub =
+        _Lvalues.sublist(_Lvalues.length - period, _Lvalues.length);
     sub.sort();
     //print('getLow sub list:$sub                ${sub.first}');
     return sub.first;
@@ -72,19 +77,20 @@ class WrView extends UIAnimatedView<UIOPath, UIOPoint> {
     double c = candleData.close;
     double h = getHigh(period);
     double l = getLow(period);
-    if(h - l == 0){
+    if (h - l == 0) {
       return null;
     }
-    double y = 100 * (h - c)/(h - l);
+    double y = 100 * (h - c) / (h - l);
     //print('wr---------$y     ${(h - c)}    $h      $c       ${(h-l)}');
-    if(y == null){
+    if (y == null) {
       return null;
     }
     var point = UIOPoint(
         candleData.timeMs.toDouble() + candleData.durationMs.toDouble() / 2.0,
         y,
         index: candleData.index);
-    wrContext.onWrChange(period,y);
+    wrContext.onWrChange(period, y);
+    wrMap[candleData.index] = y;
     return point;
   }
 
@@ -121,65 +127,133 @@ class WrView extends UIAnimatedView<UIOPath, UIOPoint> {
 }
 
 class WrWidgetState extends State<WrWidget> {
-  AABBContext candlesticksContext;
+  AABBContext aabbContext;
+  CandlesticksContext candlesticksContext;
+  Map<int, double> wrShort = <int, double>{};
+  Map<int, double> wrMiddle = <int, double>{};
+  Map<int, double> wrLong = <int, double>{};
+  var lastWrShort;
+  var lastWrMiddle;
+  var lastWrLong;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    candlesticksContext = AABBContext.of(context);
+    aabbContext = AABBContext.of(context);
+    candlesticksContext = CandlesticksContext.of(context);
   }
 
   WrValueData wrValueData = WrValueData();
 
   onWrChange(int period, double wr) {
+    if(widget.style.wrStyle.shortPeriod == period){
+      lastWrShort = wr;
+    }
+    if(widget.style.wrStyle.middlePeriod == period){
+      lastWrMiddle = wr;
+    }
+    if(widget.style.wrStyle.longPeriod == period){
+      lastWrLong = wr;
+    }
+    if (candlesticksContext?.extCandleData != null) {
+      return;
+    }
     wrValueData.put(period, wr);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    var uiCamera = candlesticksContext?.uiCamera;
+    setThisPositionWr();
+    var uiCamera = aabbContext?.uiCamera;
     return WrContext(
-        onWrChange: onWrChange,
-        child: Stack(
-          children: <Widget>[
-            Positioned.fill(
-                child: UIAnimatedWidget<UIOPath, UIOPoint>(
-                  dataStream: widget.dataStream,
-                  uiCamera: uiCamera,
-                  duration: widget.style.wrStyle.duration,
-                  state: () => WrView(
+      onWrChange: onWrChange,
+      child: Stack(
+        children: <Widget>[
+          Positioned.fill(
+            child: UIAnimatedWidget<UIOPath, UIOPoint>(
+              dataStream: widget.dataStream,
+              uiCamera: uiCamera,
+              duration: widget.style.wrStyle.duration,
+              state: () => WrView(
                     color: widget.style.wrStyle.shortColor,
                     period: widget.style.wrStyle.shortPeriod,
+                    wrMap: wrShort,
                   ),
-                )),
-            Positioned.fill(
-                child: UIAnimatedWidget<UIOPath, UIOPoint>(
-                  dataStream: widget.dataStream,
-                  uiCamera: uiCamera,
-                  duration: widget.style.wrStyle.duration,
-                  state: () => WrView(
+            ),
+          ),
+          Positioned.fill(
+            child: UIAnimatedWidget<UIOPath, UIOPoint>(
+              dataStream: widget.dataStream,
+              uiCamera: uiCamera,
+              duration: widget.style.wrStyle.duration,
+              state: () => WrView(
                     color: widget.style.wrStyle.middleColor,
                     period: widget.style.wrStyle.middlePeriod,
+                    wrMap: wrMiddle,
                   ),
-                )),
-            Positioned.fill(
-                child: UIAnimatedWidget<UIOPath, UIOPoint>(
-                  dataStream: widget.dataStream,
-                  uiCamera: uiCamera,
-                  duration: widget.style.wrStyle.duration,
-                  state: () => WrView(
+            ),
+          ),
+          Positioned.fill(
+            child: UIAnimatedWidget<UIOPath, UIOPoint>(
+              dataStream: widget.dataStream,
+              uiCamera: uiCamera,
+              duration: widget.style.wrStyle.duration,
+              state: () => WrView(
                     color: widget.style.wrStyle.longColor,
                     period: widget.style.wrStyle.longPeriod,
+                    wrMap: wrLong,
                   ),
-                )),
-            Positioned.fill(
-                child: WrValueWidget(
-                  wrValueData: wrValueData,
-                  style: widget.style,
-                )),
-          ],
-        ));
+            ),
+          ),
+          Positioned.fill(
+            child: WrValueWidget(
+              wrValueData: wrValueData,
+              style: widget.style,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  ///设置指定时间点的Wr
+  void setThisPositionWr(){
+    if (candlesticksContext?.extCandleData != null) {
+      if(wrShort.containsKey(candlesticksContext.extCandleData.index)){
+        wrValueData.put(widget.style.wrStyle.shortPeriod, wrShort[candlesticksContext.extCandleData.index]);
+      } else {
+        wrValueData.remove(widget.style.wrStyle.shortPeriod);
+      }
+      if(wrMiddle.containsKey(candlesticksContext.extCandleData.index)){
+        wrValueData.put(widget.style.wrStyle.middlePeriod, wrMiddle[candlesticksContext.extCandleData.index]);
+      } else {
+        wrValueData.remove(widget.style.wrStyle.middlePeriod);
+      }
+      if(wrLong.containsKey(candlesticksContext.extCandleData.index)){
+        wrValueData.put(widget.style.wrStyle.longPeriod, wrLong[candlesticksContext.extCandleData.index]);
+      } else {
+        wrValueData.remove(widget.style.wrStyle.longPeriod);
+      }
+    } else {
+      if(lastWrShort != null){
+        wrValueData.put(widget.style.wrStyle.shortPeriod, lastWrShort);
+      } else {
+        wrValueData.remove(widget.style.wrStyle.shortPeriod);
+      }
+      if(lastWrMiddle != null){
+        wrValueData.put(widget.style.wrStyle.middlePeriod, lastWrMiddle);
+      } else {
+        wrValueData.remove(widget.style.wrStyle.middlePeriod);
+      }
+      if(lastWrLong != null){
+        wrValueData.put(widget.style.wrStyle.longPeriod, lastWrLong);
+      } else {
+        wrValueData.remove(widget.style.wrStyle.longPeriod);
+      }
+    }
+    setState(() {});
   }
 }
 

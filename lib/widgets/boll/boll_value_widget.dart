@@ -85,6 +85,23 @@ class BollValuePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(BollValuePainter oldPainter) {
+    if(bollValueData?.currentValue != oldPainter?.bollValueData?.currentValue){
+      return true;
+    }
+    if(bollValueData?.lbValue != oldPainter?.bollValueData?.lbValue){
+      return true;
+    }
+    if(bollValueData?.ubValue != oldPainter?.bollValueData?.ubValue){
+      return true;
+    }
+    if(bollValueData?.bollValue != oldPainter?.bollValueData?.bollValue){
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  bool shouldRebuildSemantics(BollValuePainter oldDelegate) {
     return false;
   }
 }

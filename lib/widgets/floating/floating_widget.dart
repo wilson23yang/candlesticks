@@ -156,6 +156,11 @@ class TopFloatingPainter extends CustomPainter {
   bool shouldRepaint(TopFloatingPainter oldPainter) {
     return false;
   }
+
+  @override
+  bool shouldRebuildSemantics(TopFloatingPainter oldDelegate) {
+    return false;
+  }
 }
 
 
