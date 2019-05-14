@@ -3,6 +3,7 @@ import 'package:candlesticks/widgets/floating/vertical_line_floating_widget.dart
 import 'package:candlesticks/widgets/graticule/time_graticule_widget.dart';
 import 'package:candlesticks/widgets/indicator_switch.dart';
 import 'package:candlesticks/widgets/line_type.dart';
+import 'package:candlesticks/widgets/mh/mh_middle_widget.dart';
 import 'package:candlesticks/widgets/mh/mh_top_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:candlesticks/widgets/candlesticks_state.dart';
@@ -163,7 +164,7 @@ class CandlesticksView extends CandlesticksState {
           )),
       Container(
           height: 70,
-          child: MiddleWidget(
+          child: MhMiddleWidget(
             durationMs: durationMs,
             rangeX: uiCameraAnimation?.value,
             candlesticksStyle: widget.candlesticksStyle,

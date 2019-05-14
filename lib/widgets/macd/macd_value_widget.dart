@@ -56,7 +56,7 @@ class MACDValuePainter extends CustomPainter {
           0,
           "MACD(${macdValueData.get( MACDValueKey.S,).toInt()},"
               "${macdValueData.get(MACDValueKey.L).toInt()},"
-              "${macdValueData.get(MACDValueKey.M).toInt()})   ",
+              "${macdValueData.get(MACDValueKey.M).toInt()})",
           style.macdStyle.macdColor);
     }
     if (macdValueData.containsKey(MACDValueKey.MACD)) {

@@ -1,20 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'package:candlesticks/2d/uiobjects/uio_candle.dart';
-import 'package:candlesticks/2d/uicamera.dart';
 import 'package:candlesticks/2d/candle_data.dart';
-import 'package:candlesticks/widgets/candles/candles_style.dart';
-import 'package:flutter/material.dart';
-
-import 'package:candlesticks/2d/uiobjects/uio_path.dart';
 import 'package:candlesticks/2d/uiobjects/uio_candles.dart';
 import 'package:candlesticks/2d/uiobjects/uio_point.dart';
 import 'package:candlesticks/2d/ui_animated_widget.dart';
-import 'package:candlesticks/2d/candle_data.dart';
-import 'package:candlesticks/widgets/ma/ma_style.dart';
-import 'package:candlesticks/widgets/candlesticks_context_widget.dart';
 import 'package:candlesticks/widgets/aabb/aabb_context.dart';
-import 'package:candlesticks/widgets/candles/candles_value_widget.dart';
 import 'package:candlesticks/widgets/candlesticks_style.dart';
 
 class CandlesView extends UIAnimatedView<UIOCandles, UIOCandle> {

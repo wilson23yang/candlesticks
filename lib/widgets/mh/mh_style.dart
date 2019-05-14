@@ -14,6 +14,9 @@ class MHStyle {
   double dashLineGap;
   double textSize;
 
+  Color volumeLineColor;
+  Color volumeValueTextColor;
+
   MHStyle({
     this.lineColor = Colors.grey,
     this.pointColor = Colors.white,
@@ -21,6 +24,8 @@ class MHStyle {
     this.labelBorderColor = const Color(0xFFDCAD0F),
     this.dashLineColor = const Color(0xBBDCAD0F),
     this.labelColor = const Color(0xFFDCAD0F),
+    this.volumeLineColor = const Color(0xFF868686),
+    this.volumeValueTextColor = Colors.white,
     this.lineWidth = 0.6,
     this.pointRadius = 2,
     this.dashLineGap = 5,
@@ -40,4 +45,6 @@ MHStyle defaultMHStyle = MHStyle()
   ..labelBgColor = Colors.black45
   ..dashLineWidth = 1.2
   ..dashLineGap = 5
-  ..textSize = 10;
+  ..textSize = 10
+  ..volumeLineColor = Color(0xFF868686)
+  ..volumeValueTextColor = Colors.white;

@@ -3,9 +3,13 @@ import 'package:candlesticks/widgets/candlesticks_style.dart';
 
 class NetGridPainter extends CustomPainter {
   final CandlesticksStyle candlesticksStyle;
+  final bool hideTopLine;
+  final bool hideBottomLine;
 
   NetGridPainter({
     this.candlesticksStyle,
+    this.hideTopLine,
+    this.hideBottomLine,
   });
 
   void paintX(Canvas canvas, Size size, double x, Paint painter) {
@@ -26,8 +30,12 @@ class NetGridPainter extends CustomPainter {
     for (var i = 0; i <= this.candlesticksStyle.nX; i++) {
       paintX(canvas, size, width * i, painter);
     }
-    paintY(canvas, size, 0, painter);
-    paintY(canvas, size, size.height, painter);
+    if(!hideTopLine){
+      paintY(canvas, size, 0, painter);
+    }
+    if(!hideBottomLine){
+      paintY(canvas, size, size.height, painter);
+    }
   }
 
   @override
@@ -45,15 +53,21 @@ class NetGridWidget extends StatelessWidget {
   NetGridWidget({
     Key key,
     this.candlesticksStyle,
+    this.hideTopLine = false,
+    this.hideBottomLine = false,
   }) : super(key: key);
 
   final CandlesticksStyle candlesticksStyle;
+  final bool hideTopLine;
+  final bool hideBottomLine;
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: NetGridPainter(
         candlesticksStyle: this.candlesticksStyle,
+        hideBottomLine: hideBottomLine,
+        hideTopLine: hideTopLine
       ),
     );
   }

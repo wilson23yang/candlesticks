@@ -66,7 +66,7 @@ class TopFloatingPainter extends CustomPainter {
     var sceneX = point.dx;
     var sceneY = point.dy;
     //print('extCandleData......$sceneX      $sceneY');
-    double width = size.width / 3.5;
+    double width = 110;
     if (width < style.floatingStyle.minWidth) {
       width = style.floatingStyle.minWidth;
     }
