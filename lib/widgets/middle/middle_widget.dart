@@ -55,7 +55,7 @@ class MiddleWidget extends StatelessWidget {
       durationMs: durationMs,
       rangeX: rangeX,
       candlesticksStyle: widget.candlesticksStyle,
-      paddingY: widget.candlesticksStyle.maStyle.cameraPaddingY,
+      paddingY: 0,
       child: Container(
         decoration: BoxDecoration(
           color: widget.candlesticksStyle.backgroundColor,
@@ -67,7 +67,7 @@ class MiddleWidget extends StatelessWidget {
               candlesticksStyle: widget.candlesticksStyle,
             )),
             Positioned.fill(
-              top: 12,
+              top: 15,
               child: CandlesWidget(
                 dataStream: widget.volumeDataStream,
                 style: widget.candlesticksStyle,
