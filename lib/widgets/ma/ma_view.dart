@@ -247,7 +247,6 @@ class MaWidgetState extends State<MaWidget> {
       }
       tempMaValueData.currentValue =
           maCurrent[candlesticksContext.extCandleData.index];
-      print('tempMaValueData currentValue:${tempMaValueData.currentValue}     shortValue:${tempMaValueData.shortValue}     middleValue:${tempMaValueData.middleValue}');
     } else {
       tempMaValueData = MaValueData();
       if (lastMaShort != null) {
