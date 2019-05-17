@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'dart:math';
-
 import 'package:candlesticks/widgets/candlesticks_widget.dart';
-import 'package:candlesticks/2d/uiobjects/uio_candle.dart';
-import 'package:candlesticks/2d/uicamera.dart';
-import 'package:candlesticks/2d/uiobjects/uio_rect.dart';
-import 'package:candlesticks/2d/uiobjects/uio_point.dart';
-import 'package:candlesticks/2d/treedlist.dart';
 import 'package:candlesticks/2d/candle_data.dart';
 import 'package:candlesticks/widgets/aabb/aabb_range.dart';
 
@@ -25,7 +18,7 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
   StreamSubscription<CandleData> subscription;
   bool touching = false;
   List<ExtCandleData> candleDataList = List<ExtCandleData>(); //这个可以优化掉。
-
+  bool isShowingEmptyPage = false;
 
   CandlesticksState({Stream<CandleData> dataStream})
       : super();
@@ -78,7 +71,8 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
     //print('extCandleData::::::index:${extCandleData.index}  first:${extCandleData.first}   candleDataList length:${candleDataList.length}');
 
     this.exdataStreamController.sink.add(extCandleData);
-    if (isWaitingForInitData()) {
+    if (!isWaitingForInitData() && isShowingEmptyPage) {
+      isShowingEmptyPage = false;
       setState(() {
 
       });
@@ -318,7 +312,6 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState(); //插入监听器
     firstCandleData = null;
     durationMs = widget.durationMs;
@@ -333,7 +326,6 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
 
   @override
   void deactivate() {
-    // TODO: implement deactivate
     super.deactivate();
   }
 

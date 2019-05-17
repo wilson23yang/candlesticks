@@ -22,6 +22,7 @@ class CandlesticksView extends CandlesticksState {
   @override
   Widget build(BuildContext context) {
     if (isWaitingForInitData()) {
+      isShowingEmptyPage = true;
       return Container(
           /*
         child: Center(
@@ -60,7 +61,7 @@ class CandlesticksView extends CandlesticksState {
               extCandleData: extCandleData,
               touchPoint: touchPoint,
               touching: touching,
-              lastCandleData: candleDataList != null
+              lastCandleData: (candleDataList != null && candleDataList.isNotEmpty)
                   ? candleDataList[candleDataList.length - 1]
                   : null,
               child: Column(
