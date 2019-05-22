@@ -130,7 +130,7 @@ class CandlesticksView extends CandlesticksState {
             extDataStream: exdataStream,
           )),
       Container(
-          height: 70,
+          height: widget.candlesticksStyle.middleHeight ?? 70,
           child: MiddleWidget(
             durationMs: durationMs,
             rangeX: uiCameraAnimation?.value,
@@ -141,7 +141,7 @@ class CandlesticksView extends CandlesticksState {
         visible: defaultIndicatorSwitch.subSwitch,
         maintainState: true,
         child: Container(
-          height: 70,
+          height: widget.candlesticksStyle.bottomHeight ?? 70,
           child: BottomWidget(
             durationMs: durationMs,
             rangeX: uiCameraAnimation?.value,
@@ -164,7 +164,7 @@ class CandlesticksView extends CandlesticksState {
             extDataStream: exdataStream,
           )),
       Container(
-          height: 70,
+          height: widget.candlesticksStyle.middleHeight ?? 70,
           child: MhMiddleWidget(
             durationMs: durationMs,
             rangeX: uiCameraAnimation?.value,
@@ -175,7 +175,7 @@ class CandlesticksView extends CandlesticksState {
         visible: defaultIndicatorSwitch.subSwitch,
         maintainState: true,
         child: Container(
-          height: 70,
+          height: widget.candlesticksStyle.bottomHeight ?? 70,
           child: BottomWidget(
             durationMs: durationMs,
             rangeX: uiCameraAnimation?.value,

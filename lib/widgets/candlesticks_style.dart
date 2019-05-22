@@ -46,6 +46,7 @@ CandlesticksStyle DefaultDarkCandleStyle = CandlesticksStyle(
   rsiStyle: defaultRsiStyle,
   wrStyle: defaultWrStyle,
   macdStyle: defaultMacdStyle,
+
 );
 
 CandlesticksStyle DefaultLightCandleStyle = CandlesticksStyle(
@@ -113,6 +114,9 @@ class CandlesticksStyle {
   final KdjStyle kdjStyle;
   final MacdStyle macdStyle;
 
+  final double middleHeight;
+  final double bottomHeight;
+
   CandlesticksStyle({this.minViewPortX,
     this.maxViewPortX,
     this.floatingStyle,
@@ -132,5 +136,7 @@ class CandlesticksStyle {
     this.paddingY,
     this.nX,
     this.nY,
-    this.durationMs});
+    this.durationMs,
+    this.middleHeight,
+    this.bottomHeight});
 }

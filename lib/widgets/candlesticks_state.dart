@@ -28,6 +28,9 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
   }
 
   _onCandleData(CandleData candleData) {
+    if(candleData == null){
+      return;
+    }
     if (candleDataList.length > 0) {
       if (candleData.timeMs - candleDataList.last.timeMs > this.durationMs) {
         CandleData t = CandleData(
