@@ -1,3 +1,4 @@
+import 'package:candlesticks/utils/string_util.dart';
 import 'package:flutter/material.dart';
 import 'package:candlesticks/widgets/aabb/aabb_context.dart';
 import 'package:candlesticks/2d/uicamera.dart';
@@ -7,10 +8,12 @@ class MhVolumeValuePainter extends CustomPainter {
   final UICamera uiCamera;
   final CandlesticksStyle style;
 
+  int precision;
   double vol;
   Paint linePaint;
 
   MhVolumeValuePainter({
+    this.precision,
     this.uiCamera,
     this.style,
     this.vol,
@@ -44,7 +47,7 @@ class MhVolumeValuePainter extends CustomPainter {
         canvas,
         size,
         0,
-        "VOL:$vol",
+        "VOL:${StringUtil.formatAssetNum(vol, precision)}",
         style.mhStyle.volumeValueTextColor);
   }
 
@@ -65,10 +68,12 @@ class MhVolumeValuePainter extends CustomPainter {
 class MhVolumeValueWidget extends StatelessWidget {
   MhVolumeValueWidget({
     Key key,
+    this.precision,
     this.vol,
     this.style,
   }) : super(key: key);
 
+  final int precision;
   final double vol;
   final CandlesticksStyle style;
 
@@ -82,6 +87,7 @@ class MhVolumeValueWidget extends StatelessWidget {
 
     return CustomPaint(
         painter: MhVolumeValuePainter(
+          precision:precision,
           vol: vol,
           uiCamera: uiCamera,
           style: this.style,

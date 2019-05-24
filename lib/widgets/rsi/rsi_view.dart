@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:candlesticks/widgets/candlesticks_context_widget.dart';
 import 'package:candlesticks/widgets/rsi/rsi_context.dart';
 import 'package:candlesticks/widgets/rsi/rsi_value_data.dart';
@@ -130,7 +132,7 @@ class RsiView extends UIAnimatedView<UIOPath, UIOPoint> {
   }
 }
 
-class RsiWidgetState extends State<RsiWidget> {
+class RsiWidgetState extends State<RsiWidget> with SingleTickerProviderStateMixin{
   AABBContext aabbContext;
   CandlesticksContext candlesticksContext;
   Map<int, double> rsiShort = <int, double>{};
@@ -140,6 +142,21 @@ class RsiWidgetState extends State<RsiWidget> {
   var lastRsiMiddle;
   var lastRsiLong;
 
+  AnimationController _controller;
+  Animation<RsiValueData> animationObject;
+  Timer _animationStartTimer;
+  bool startAnimationShow = false;
+  bool isShowClickData = false;//是否正在显示指定时间点的指标
+
+  RsiValueData rsiValueData = RsiValueData();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this,duration: Duration(milliseconds: 500));
+  }
+
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -147,23 +164,74 @@ class RsiWidgetState extends State<RsiWidget> {
     candlesticksContext = CandlesticksContext.of(context);
   }
 
-  RsiValueData rsiValueData = RsiValueData();
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _animationStartTimer?.cancel();
+    super.dispose();
+  }
+
+
+  ///
+  void startAnimation(){
+    if(_animationStartTimer == null){
+      _animationStartTimer = Timer(const Duration(seconds: 2), (){
+        startAnimationShow = true;
+      });
+    }
+  }
+
+  bool updateShort = false;
+  bool updateMiddle = false;
+  bool updateLong = false;
+  RsiValueData begin;
 
   onRsiChange(int period, double rsi) {
+    startAnimation();
+
+    if(!updateShort && !updateMiddle && !updateLong){
+      begin = rsiValueData.clone();
+    }
     if(widget.style.rsiStyle.shortPeriod == period){
       lastRsiShort = rsi;
+      RsiPeriod.short = widget.style.rsiStyle.shortPeriod;
+      if(startAnimationShow){
+        updateShort = true;
+      }
     }
     if(widget.style.rsiStyle.middlePeriod == period){
       lastRsiMiddle = rsi;
+      RsiPeriod.middle = widget.style.rsiStyle.middlePeriod;
+      if(startAnimationShow){
+        updateMiddle = true;
+      }
     }
     if(widget.style.rsiStyle.longPeriod == period){
       lastRsiLong = rsi;
+      RsiPeriod.long = widget.style.rsiStyle.longPeriod;
+      if(startAnimationShow){
+        updateLong = true;
+      }
     }
     if (candlesticksContext?.extCandleData != null) {
+      animationObject = null;
+      _controller?.stop();
       return;
     }
     rsiValueData.put(period, rsi);
-    setState(() {});
+    if(startAnimationShow && updateShort && updateMiddle && updateLong){
+      animationObject = null;
+      _controller.reset();
+      animationObject = Tween(begin: begin,end: rsiValueData).animate(_controller);
+      animationObject.addListener((){
+        if(mounted)
+          setState(() {});
+      });
+      _controller.forward();
+      updateShort = false;
+      updateMiddle = false;
+      updateLong = false;
+    }
   }
 
   @override
@@ -211,7 +279,7 @@ class RsiWidgetState extends State<RsiWidget> {
           ),
           Positioned.fill(
             child: RsiValueWidget(
-              rsiValueData: rsiValueData,
+              rsiValueData: animationObject?.value ?? rsiValueData,
               style: widget.style,
             ),
           ),
@@ -222,7 +290,9 @@ class RsiWidgetState extends State<RsiWidget> {
 
   ///设置指定时间点的RSI
   void setThisPositionRsi(){
-    if (candlesticksContext?.extCandleData != null) {
+    if (candlesticksContext != null &&
+        candlesticksContext.extCandleData != null) {
+      isShowClickData = true;
       if(rsiShort.containsKey(candlesticksContext.extCandleData.index)){
         rsiValueData.put(widget.style.rsiStyle.shortPeriod, rsiShort[candlesticksContext.extCandleData.index]);
       } else {
@@ -238,7 +308,11 @@ class RsiWidgetState extends State<RsiWidget> {
       } else {
         rsiValueData.remove(widget.style.rsiStyle.longPeriod);
       }
-    } else {
+      if(mounted){
+        setState(() {});
+      }
+    } else if (candlesticksContext.extCandleData == null && isShowClickData) {
+      isShowClickData = false;
       if(lastRsiShort != null){
         rsiValueData.put(widget.style.rsiStyle.shortPeriod, lastRsiShort);
       } else {
@@ -254,8 +328,12 @@ class RsiWidgetState extends State<RsiWidget> {
       } else {
         rsiValueData.remove(widget.style.rsiStyle.longPeriod);
       }
+      if(mounted){
+        setState(() {
+          animationObject = null;
+        });
+      }
     }
-    setState(() {});
   }
 }
 

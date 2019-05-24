@@ -46,7 +46,7 @@ class WrValuePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.drawLine(Offset(0, 0), Offset(size.width, 0), linePaint);
     double x = 0;
-    if (wrValueData.containsKey(style.wrStyle.shortPeriod)) {
+    if (wrValueData?.containsKey(style.wrStyle.shortPeriod) ?? false) {
       x = paintLabel(
           canvas,
           size,
@@ -56,7 +56,7 @@ class WrValuePainter extends CustomPainter {
                   wrValueData.get(style.wrStyle.shortPeriod), 2),
           style.wrStyle.shortColor);
     }
-    if (wrValueData.containsKey(style.wrStyle.middlePeriod)) {
+    if (wrValueData?.containsKey(style.wrStyle.middlePeriod) ?? false) {
       x += paintLabel(
           canvas,
           size,
@@ -66,7 +66,7 @@ class WrValuePainter extends CustomPainter {
                   wrValueData.get(style.wrStyle.middlePeriod), 2),
           style.wrStyle.middleColor);
     }
-    if (wrValueData.containsKey(style.wrStyle.longPeriod)) {
+    if (wrValueData?.containsKey(style.wrStyle.longPeriod) ?? false) {
       x += paintLabel(
           canvas,
           size,

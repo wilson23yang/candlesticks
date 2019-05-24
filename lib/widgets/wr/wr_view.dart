@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:candlesticks/widgets/candlesticks_context_widget.dart';
 import 'package:candlesticks/widgets/wr/wr_context.dart';
 import 'package:candlesticks/widgets/wr/wr_value_data.dart';
@@ -126,7 +128,7 @@ class WrView extends UIAnimatedView<UIOPath, UIOPoint> {
   }
 }
 
-class WrWidgetState extends State<WrWidget> {
+class WrWidgetState extends State<WrWidget> with SingleTickerProviderStateMixin{
   AABBContext aabbContext;
   CandlesticksContext candlesticksContext;
   Map<int, double> wrShort = <int, double>{};
@@ -136,6 +138,21 @@ class WrWidgetState extends State<WrWidget> {
   var lastWrMiddle;
   var lastWrLong;
 
+  AnimationController _controller;
+  Animation<WrValueData> animationObject;
+  Timer _animationStartTimer;
+  bool startAnimationShow = false;
+  bool isShowClickData = false;//是否正在显示指定时间点的指标
+
+  WrValueData wrValueData = WrValueData();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this,duration: Duration(milliseconds: 500));
+  }
+
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -143,23 +160,76 @@ class WrWidgetState extends State<WrWidget> {
     candlesticksContext = CandlesticksContext.of(context);
   }
 
-  WrValueData wrValueData = WrValueData();
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _animationStartTimer?.cancel();
+    super.dispose();
+  }
+
+  ///
+  void startAnimation(){
+    if(_animationStartTimer == null){
+      _animationStartTimer = Timer(const Duration(seconds: 2), (){
+        startAnimationShow = true;
+      });
+    }
+  }
+
+//  bool updateShort = false;
+//  bool updateMiddle = false;
+//  bool updateLong = false;
+  WrValueData begin;
+
 
   onWrChange(int period, double wr) {
+    startAnimation();
+
+    //if(!updateShort && !updateMiddle && !updateLong){
+      begin = wrValueData.clone();
+    //}
+
     if(widget.style.wrStyle.shortPeriod == period){
       lastWrShort = wr;
+      WrPeriod.short = widget.style.wrStyle.shortPeriod;
+      /*if(startAnimationShow){
+        updateShort = true;
+      }*/
     }
     if(widget.style.wrStyle.middlePeriod == period){
       lastWrMiddle = wr;
+      WrPeriod.middle = widget.style.wrStyle.middlePeriod;
+      /*if(startAnimationShow){
+        updateMiddle = true;
+      }*/
     }
     if(widget.style.wrStyle.longPeriod == period){
       lastWrLong = wr;
+      WrPeriod.long = widget.style.wrStyle.longPeriod;
+      /*if(startAnimationShow){
+        updateLong = true;
+      }*/
     }
     if (candlesticksContext?.extCandleData != null) {
+      animationObject = null;
+      _controller?.stop();
       return;
     }
     wrValueData.put(period, wr);
-    setState(() {});
+    if(startAnimationShow/* && updateShort && updateMiddle && updateLong*/){
+      animationObject = null;
+      _controller.reset();
+      animationObject = Tween(begin: begin,end: wrValueData).animate(_controller);
+      animationObject.addListener((){
+        if(mounted)
+          setState(() {});
+      });
+      _controller.forward();
+      /*updateShort = false;
+      updateMiddle = false;
+      updateLong = false;*/
+    }
   }
 
   @override
@@ -208,7 +278,7 @@ class WrWidgetState extends State<WrWidget> {
           ),
           Positioned.fill(
             child: WrValueWidget(
-              wrValueData: wrValueData,
+              wrValueData: animationObject?.value ?? wrValueData,
               style: widget.style,
             ),
           ),
@@ -220,7 +290,9 @@ class WrWidgetState extends State<WrWidget> {
 
   ///设置指定时间点的Wr
   void setThisPositionWr(){
-    if (candlesticksContext?.extCandleData != null) {
+    if (candlesticksContext != null &&
+        candlesticksContext.extCandleData != null) {
+      isShowClickData = true;
       if(wrShort.containsKey(candlesticksContext.extCandleData.index)){
         wrValueData.put(widget.style.wrStyle.shortPeriod, wrShort[candlesticksContext.extCandleData.index]);
       } else {
@@ -236,7 +308,11 @@ class WrWidgetState extends State<WrWidget> {
       } else {
         wrValueData.remove(widget.style.wrStyle.longPeriod);
       }
-    } else {
+      if(mounted){
+        setState(() {});
+      }
+    } else if (candlesticksContext.extCandleData == null && isShowClickData) {
+      isShowClickData = false;
       if(lastWrShort != null){
         wrValueData.put(widget.style.wrStyle.shortPeriod, lastWrShort);
       } else {
@@ -252,8 +328,12 @@ class WrWidgetState extends State<WrWidget> {
       } else {
         wrValueData.remove(widget.style.wrStyle.longPeriod);
       }
+      if(mounted){
+        setState(() {
+          animationObject = null;
+        });
+      }
     }
-    setState(() {});
   }
 }
 

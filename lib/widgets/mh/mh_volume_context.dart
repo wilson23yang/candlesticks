@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MhVolumeContext extends InheritedWidget {
-  final Function(double vol) onVolChange;
+  final Function(int index,double vol) onVolChange;
 
   MhVolumeContext({
     Key key,

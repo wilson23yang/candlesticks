@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:candlesticks/utils/string_util.dart';
 import 'package:candlesticks/widgets/boll/boll_context.dart';
 import 'package:candlesticks/widgets/boll/boll_value_data.dart';
 import 'package:candlesticks/widgets/boll/boll_value_widget.dart';
@@ -25,7 +28,7 @@ class BollView extends UIAnimatedView<UIOPath, UIOPoint> {
   Map<int, double> bollMap;
   Map<int, double> curMap;
 
-  BollView(this.type, this.bollLine, this.color, this.bollMap,{this.curMap})
+  BollView(this.type, this.bollLine, this.color, this.bollMap, {this.curMap})
       : super(animationCount: 2) {
     this._values = List<double>();
 
@@ -109,7 +112,7 @@ class BollView extends UIAnimatedView<UIOPath, UIOPoint> {
     if (bollMap != null) {
       bollMap[candleData.index] = y;
     }
-    if(curMap != null){
+    if (curMap != null) {
       curMap[candleData.index] = candleData.close;
     }
     return point;
@@ -147,9 +150,18 @@ class BollView extends UIAnimatedView<UIOPath, UIOPoint> {
   }
 }
 
-class BollWidgetState extends State<BollWidget> {
+class BollWidgetState extends State<BollWidget>
+    with SingleTickerProviderStateMixin {
   AABBContext aabbContext;
   CandlesticksContext candlesticksContext;
+
+  AnimationController _controller;
+  Animation<BollValueData> animationObject;
+  Timer _animationStartTimer;
+  bool startAnimationShow = false;
+  bool isShowClickData = false; //是否正在显示指定时间点的指标
+
+  BollValueData bollValueData;
 
   Map<int, double> curMap = <int, double>{};
   Map<int, double> mbMap = <int, double>{};
@@ -162,17 +174,49 @@ class BollWidgetState extends State<BollWidget> {
   double lastDn;
 
   @override
+  void initState() {
+    super.initState();
+    _controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     aabbContext = AABBContext.of(context);
     candlesticksContext = CandlesticksContext.of(context);
   }
 
-  BollValueData bollValueData;
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _animationStartTimer?.cancel();
+    super.dispose();
+  }
+
+  ///
+  void startAnimation() {
+    if (_animationStartTimer == null) {
+      _animationStartTimer = Timer(const Duration(seconds: 2), () {
+        startAnimationShow = true;
+      });
+    }
+  }
+
+  bool updateMB = false;
+  bool updateUP = false;
+  bool updateDN = false;
+  BollValueData begin;
+  int precision = 1;
 
   onBollChange(BollLine type, double boll, double currentValue) {
+    startAnimation();
+    precision = StringUtil.getPrecision(currentValue, defaultPrecision: 1);
     if (bollValueData == null) {
       bollValueData = BollValueData();
+    }
+    if (!updateMB && !updateUP && !updateDN) {
+      begin = bollValueData.clone();
     }
     lastCur = currentValue;
     if (type == BollLine.MB) {
@@ -182,27 +226,50 @@ class BollWidgetState extends State<BollWidget> {
     } else if (type == BollLine.DN) {
       lastDn = boll;
     }
-    if (candlesticksContext == null || candlesticksContext.extCandleData == null) {
-      if (type == BollLine.MB) {
-        bollValueData = BollValueData(
-            bollValue: boll,
-            currentValue: currentValue,
-            ubValue: bollValueData.ubValue,
-            lbValue: bollValueData.lbValue);
-      } else if (type == BollLine.UP) {
-        bollValueData = BollValueData(
-            bollValue: bollValueData.bollValue,
-            currentValue: currentValue,
-            ubValue: boll,
-            lbValue: bollValueData.lbValue);
-      } else if (type == BollLine.DN) {
-        bollValueData = BollValueData(
-            bollValue: bollValueData.bollValue,
-            currentValue: currentValue,
-            ubValue: bollValueData.ubValue,
-            lbValue: boll);
+    if (candlesticksContext == null ||
+        candlesticksContext.extCandleData == null) {
+      if (type == BollLine.MB && !updateMB) {
+        if (startAnimationShow) {
+          updateMB = true;
+        }
+        bollValueData = bollValueData.clone()
+          ..currentValue = currentValue
+          ..bollValue = boll;
+      } else if (type == BollLine.UP && !updateUP) {
+        if (startAnimationShow) {
+          updateUP = true;
+        }
+        bollValueData = bollValueData.clone()
+          ..currentValue = currentValue
+          ..ubValue = boll;
+      } else if (type == BollLine.DN && !updateDN) {
+        if (startAnimationShow) {
+          updateDN = true;
+        }
+        bollValueData = bollValueData.clone()
+          ..currentValue = currentValue
+          ..lbValue = boll;
       }
-      setState(() {});
+
+      if (startAnimationShow && updateMB && updateUP && updateDN) {
+        animationObject = null;
+        _controller.reset();
+        animationObject =
+            Tween(begin: begin, end: bollValueData).animate(_controller);
+        animationObject.addListener(() {
+          setState(() {});
+        });
+        _controller.forward();
+        updateMB = false;
+        updateUP = false;
+        updateDN = false;
+      }
+    } else {
+      if(mounted){
+        setState(() {
+          animationObject = null;
+        });
+      }
     }
   }
 
@@ -220,7 +287,8 @@ class BollWidgetState extends State<BollWidget> {
               uiCamera: uiCamera,
               duration: widget.style.maStyle.duration,
               state: () => BollView(widget.type, BollLine.UP,
-                  widget.style.maStyle.shortColor, upMap,curMap: curMap),
+                  widget.style.maStyle.shortColor, upMap,
+                  curMap: curMap),
             )),
             Positioned.fill(
                 child: UIAnimatedWidget<UIOPath, UIOPoint>(
@@ -240,7 +308,8 @@ class BollWidgetState extends State<BollWidget> {
             )),
             Positioned.fill(
                 child: BollValueWidget(
-              bollValueData: bollValueData,
+              precision: precision,
+              bollValueData: animationObject?.value ?? bollValueData,
               style: widget.style,
               type: widget.type,
             )),
@@ -249,26 +318,33 @@ class BollWidgetState extends State<BollWidget> {
   }
 
   void setThisPositionBoll() {
-    if (candlesticksContext == null || candlesticksContext.extCandleData == null) {
+    if (candlesticksContext == null ||
+        candlesticksContext.extCandleData == null && isShowClickData) {
+      isShowClickData = false;
       bollValueData = BollValueData(
         bollValue: lastMb,
         currentValue: lastCur,
         ubValue: lastUp,
         lbValue: lastDn,
       );
-      if(mounted){
-        setState(() {});
+      if (mounted) {
+        setState(() {
+          animationObject = null;
+        });
       }
     } else if (candlesticksContext != null &&
         candlesticksContext.extCandleData != null) {
+      isShowClickData = true;
       bollValueData = BollValueData(
         bollValue: mbMap[candlesticksContext.extCandleData.index],
         currentValue: curMap[candlesticksContext.extCandleData.index],
         ubValue: upMap[candlesticksContext.extCandleData.index],
         lbValue: dnMap[candlesticksContext.extCandleData.index],
       );
-      if(mounted){
-        setState(() {});
+      if (mounted) {
+        setState(() {
+          animationObject = null;
+        });
       }
     }
   }

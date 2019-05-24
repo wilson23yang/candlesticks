@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:candlesticks/widgets/candlesticks_context_widget.dart';
 import 'package:candlesticks/widgets/kdj/kdj_context.dart';
 import 'package:candlesticks/widgets/kdj/kdj_value_data.dart';
@@ -178,7 +180,7 @@ class KdjView extends UIAnimatedView<UIOPath, UIOPoint> {
   }
 }
 
-class KdjWidgetState extends State<KdjWidget> {
+class KdjWidgetState extends State<KdjWidget> with SingleTickerProviderStateMixin{
   AABBContext aabbContext;
   CandlesticksContext candlesticksContext;
   Map<int, double> kMap = <int, double>{};
@@ -188,6 +190,20 @@ class KdjWidgetState extends State<KdjWidget> {
   double lastD;
   double lastJ;
 
+  AnimationController _controller;
+  Animation<KdjValueData> animationObject;
+  Timer _animationStartTimer;
+  bool startAnimationShow = false;
+  bool isShowClickData = false;//是否正在显示指定时间点的指标
+
+  KdjValueData kdjValueData = KdjValueData();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this,duration: Duration(milliseconds: 500));
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -195,36 +211,98 @@ class KdjWidgetState extends State<KdjWidget> {
     candlesticksContext = CandlesticksContext.of(context);
   }
 
-  KdjValueData kdjValueData = KdjValueData();
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _animationStartTimer?.cancel();
+    super.dispose();
+  }
+
+  ///
+  void startAnimation(){
+    if(_animationStartTimer == null){
+      _animationStartTimer = Timer(const Duration(seconds: 2), (){
+        startAnimationShow = true;
+      });
+    }
+  }
+
+  bool updateK = false;
+  bool updateD = false;
+  bool updateJ = false;
+  KdjValueData begin;
 
   onKdjChange(KDJ type, double kdj) {
+    startAnimation();
+
+    if(!updateD && !updateJ && !updateK){
+      begin = kdjValueData.clone();
+      //print('clone....animation  ${begin.get(KDJ.K)}     ${begin.get(KDJ.D)}     ${begin.get(KDJ.J)}    ');
+    }
+
     if(type == KDJ.K){
       lastK = kdj;
+      if(startAnimationShow){
+        updateK = true;
+      }
     } else if(type == KDJ.J){
       lastJ = kdj;
+      if(startAnimationShow){
+        updateJ = true;
+      }
     } else {
       lastD = kdj;
+      if(startAnimationShow){
+        updateD = true;
+      }
     }
+
     if (candlesticksContext.extCandleData != null) {
+      animationObject = null;
+      _controller?.stop();
       return;
     }
     kdjValueData.put(type, kdj);
-    setState(() {});
+    //print('startAnimationShow:$startAnimationShow   updateK:$updateK    updateJ:$updateJ    updateD:$updateD');
+    if(startAnimationShow && updateK && updateJ && updateD){
+      //print('run....animation  ${kdjValueData.get(KDJ.K)}     ${kdjValueData.get(KDJ.D)}     ${kdjValueData.get(KDJ.J)}    ');
+
+      animationObject = null;
+      _controller.reset();
+      animationObject = Tween(begin: begin,end: kdjValueData).animate(_controller);
+      animationObject.addListener((){
+        setState(() {});
+      });
+      _controller.forward();
+      updateK = false;
+      updateD = false;
+      updateJ = false;
+    }
+    //setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     var uiCamera = aabbContext?.uiCamera;
-    if (candlesticksContext.extCandleData != null) {
+    if (candlesticksContext != null &&
+        candlesticksContext.extCandleData != null) {
+      isShowClickData = true;
       kdjValueData.put(KDJ.K, kMap[candlesticksContext.extCandleData.index]);
       kdjValueData.put(KDJ.D, dMap[candlesticksContext.extCandleData.index]);
       kdjValueData.put(KDJ.J, jMap[candlesticksContext.extCandleData.index]);
-      setState(() {});
-    } else {
+      if(mounted){
+        setState(() {});
+      }
+    } else if (candlesticksContext.extCandleData == null && isShowClickData){
+      isShowClickData = false;
       kdjValueData.put(KDJ.K, lastK);
       kdjValueData.put(KDJ.D, lastD);
       kdjValueData.put(KDJ.J, lastJ);
-      setState(() {});
+      if(mounted){
+        setState(() {
+          animationObject = null;
+        });
+      }
     }
     return KdjContext(
       onKdjChange: onKdjChange,
@@ -268,7 +346,7 @@ class KdjWidgetState extends State<KdjWidget> {
           ),
           Positioned.fill(
             child: KdjValueWidget(
-              kdjValueData: kdjValueData,
+              kdjValueData: animationObject?.value ?? kdjValueData,
               style: widget.style,
             ),
           ),

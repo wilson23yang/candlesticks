@@ -51,19 +51,19 @@ class KdjValuePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.drawLine(Offset(0, 0), Offset(size.width, 0), linePaint);
     double x = 0;
-    if (kdjValueData.containsKey(KDJ.K)) {
+    if (kdjValueData?.containsKey(KDJ.K) ?? false) {
       x = paintLabel(canvas, size, 0, "K:" +
           StringUtil.formatAssetNum(
               kdjValueData.get(KDJ.K), 6),
           style.wrStyle.shortColor);
     }
-    if (kdjValueData.containsKey(KDJ.D)) {
+    if (kdjValueData?.containsKey(KDJ.D) ?? false) {
       x += paintLabel(canvas, size, x, "D:" +
           StringUtil.formatAssetNum(
               kdjValueData.get(KDJ.D), 6),
           style.wrStyle.middleColor);
     }
-    if (kdjValueData.containsKey(KDJ.J)) {
+    if (kdjValueData?.containsKey(KDJ.J) ?? false) {
       x += paintLabel(canvas, size, x, "J:" +
           StringUtil.formatAssetNum(
               kdjValueData.get(KDJ.J), 6),

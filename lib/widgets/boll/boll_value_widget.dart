@@ -11,6 +11,7 @@ class BollValuePainter extends CustomPainter {
   final double paddingY;
   final CandlesticksStyle style;
   final Type type;
+  final int precision;
 
   BollValueData bollValueData;
 
@@ -20,6 +21,7 @@ class BollValuePainter extends CustomPainter {
     this.style,
     this.bollValueData,
     this.type = Type.price,
+    this.precision
   });
 
 
@@ -45,23 +47,23 @@ class BollValuePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if(type == Type.price){
-      int precision = StringUtil.getPrecision(bollValueData?.currentValue?.toStringAsFixed(style.fractionDigits));
+      //int precision = StringUtil.getPrecision(bollValueData?.currentValue?.toStringAsFixed(style.fractionDigits));
       if(StringUtil.isEmpty(bollValueData?.currentValue?.toStringAsFixed(style.fractionDigits))){
         return;
       }
-      double x = paintLabel(canvas, size, 0, "Current:" + StringUtil.trimZero(bollValueData?.currentValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.currentColor);
+      double x = paintLabel(canvas, size, 0, "Current:" + bollValueData?.currentValue?.toStringAsFixed(precision), style.maStyle.currentColor);
       if(StringUtil.isEmpty(bollValueData?.bollValue?.toStringAsFixed(style.fractionDigits))){
         return;
       }
-      x += paintLabel(canvas, size, x, "BOLL:" + StringUtil.trimZero(bollValueData?.bollValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.shortColor);
+      x += paintLabel(canvas, size, x, "BOLL:" + bollValueData?.bollValue?.toStringAsFixed(precision), style.maStyle.shortColor);
       if(StringUtil.isEmpty(bollValueData?.ubValue?.toStringAsFixed(style.fractionDigits))){
         return;
       }
-      x += paintLabel(canvas, size, x, "UB:" + StringUtil.trimZero(bollValueData?.ubValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.middleColor);
+      x += paintLabel(canvas, size, x, "UB:" + bollValueData?.ubValue?.toStringAsFixed(precision), style.maStyle.middleColor);
       if(StringUtil.isEmpty(bollValueData?.lbValue?.toStringAsFixed(style.fractionDigits))){
         return;
       }
-      x += paintLabel(canvas, size, x, "LB:" + StringUtil.trimZero(bollValueData?.lbValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.longColor);
+      x += paintLabel(canvas, size, x, "LB:" + bollValueData?.lbValue?.toStringAsFixed(precision), style.maStyle.longColor);
     } else {
       if(StringUtil.isEmpty(bollValueData?.currentValue?.toStringAsFixed(style.fractionDigits))){
         return;
@@ -113,12 +115,14 @@ class BollValueWidget extends StatelessWidget {
     this.style,
     this.paddingY,
     this.type = Type.price,
+    this.precision,
   }) : super(key: key);
 
   final BollValueData bollValueData;
   final double paddingY;
   final CandlesticksStyle style;
   final Type type;
+  final int precision;
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +134,7 @@ class BollValueWidget extends StatelessWidget {
 
     return CustomPaint(
         painter: BollValuePainter(
+          precision: precision,
           bollValueData: this.bollValueData,
           uiCamera: uiCamera,
           paddingY: paddingY,

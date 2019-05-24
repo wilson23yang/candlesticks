@@ -46,7 +46,7 @@ class RsiValuePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.drawLine(Offset(0, 0), Offset(size.width, 0), linePaint);
     double x = 0;
-    if (rsiValueData.containsKey(style.rsiStyle.shortPeriod)) {
+    if (rsiValueData?.containsKey(style.rsiStyle.shortPeriod) ?? false) {
       x = paintLabel(
           canvas,
           size,
@@ -56,7 +56,7 @@ class RsiValuePainter extends CustomPainter {
                   rsiValueData.get(style.rsiStyle.shortPeriod), 2),
           style.rsiStyle.shortColor);
     }
-    if (rsiValueData.containsKey(style.rsiStyle.middlePeriod)) {
+    if (rsiValueData?.containsKey(style.rsiStyle.middlePeriod) ?? false) {
       x += paintLabel(
           canvas,
           size,
@@ -66,7 +66,7 @@ class RsiValuePainter extends CustomPainter {
                   rsiValueData.get(style.rsiStyle.middlePeriod), 2),
           style.rsiStyle.middleColor);
     }
-    if (rsiValueData.containsKey(style.rsiStyle.longPeriod)) {
+    if (rsiValueData?.containsKey(style.rsiStyle.longPeriod) ?? false) {
       x += paintLabel(
           canvas,
           size,

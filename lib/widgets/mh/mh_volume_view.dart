@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:candlesticks/utils/string_util.dart';
 import 'package:candlesticks/widgets/candlesticks_context_widget.dart';
 import 'package:candlesticks/widgets/mh/mh_volume_context.dart';
 import 'package:candlesticks/widgets/mh/mh_volume_value_view.dart';
@@ -25,7 +28,7 @@ class MhVolumeView extends UIAnimatedView<UIOCandles, UIOCandle> {
     var candleUIObject = UIOCandle.fromData(candleData, 0,
         candleData.open <= candleData.close ? positivePainter : negativePainter,
         index: candleData.index);
-    mhVolumeContext.onVolChange(candleData.volume);
+    mhVolumeContext.onVolChange(candleData.index,candleData.volume);
     return candleUIObject;
   }
 
@@ -72,10 +75,30 @@ class MhVolumeView extends UIAnimatedView<UIOCandles, UIOCandle> {
   }
 }
 
-class MhVolumeWidgetState extends State<MhVolumeWidget> {
+class MhVolumeWidgetState extends State<MhVolumeWidget> with SingleTickerProviderStateMixin{
   AABBContext aabbContext;
   CandlesticksContext candlesticksContext;
   Paint positivePainter;
+
+  AnimationController _controller;
+  Animation<double> animationObject;
+  Timer _animationStartTimer;
+  bool startAnimationShow = false;
+  bool isShowClickData = false;//是否正在显示指定时间点的指标
+
+  double lastVol;
+  double vol;
+  double begin = 0;
+  int precision = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this,duration: Duration(milliseconds: 500));
+    positivePainter = new Paint()
+      ..color = widget.style.mhStyle.volumeLineColor
+      ..style = PaintingStyle.fill;
+  }
 
   @override
   void didChangeDependencies() {
@@ -84,26 +107,64 @@ class MhVolumeWidgetState extends State<MhVolumeWidget> {
     candlesticksContext = CandlesticksContext.of(context);
   }
 
-  double lastVol;
-  double vol;
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _animationStartTimer?.cancel();
+    super.dispose();
+  }
 
-  void onVolChange(double vol){
-    lastVol = vol;
+  ///
+  void startAnimation(){
+    if(_animationStartTimer == null){
+      _animationStartTimer = Timer(const Duration(seconds: 2), (){
+        startAnimationShow = true;
+      });
+    }
+  }
+
+  int lastIndex = -1;//用于判断K切换
+  void onVolChange(int index, double volume){
+    startAnimation();
+    begin = (index != lastIndex) ? 0 : vol;
+    lastIndex = index;
+    lastVol = volume;
+    precision = StringUtil.getPrecision(lastVol,defaultPrecision: 1);
     if(candlesticksContext?.extCandleData == null){
       vol = lastVol;
-      if(mounted){
-        setState(() {});
+      if(startAnimationShow){
+        animationObject = null;
+        _controller.reset();
+        animationObject = Tween(begin: begin,end: vol).animate(_controller);
+        animationObject.addListener((){
+          setState(() {});
+        });
+        _controller.forward();
       }
+    } else {
+      animationObject = null;
+      _controller?.stop();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     var uiCamera = aabbContext?.uiCamera;
-    if(candlesticksContext?.extCandleData != null){
+    if(candlesticksContext != null &&
+        candlesticksContext.extCandleData != null){
+      isShowClickData = true;
       vol = candlesticksContext?.extCandleData?.volume;
-    } else {
+      if(mounted){
+        setState(() {});
+      }
+    } else if (candlesticksContext.extCandleData == null && isShowClickData){
+      isShowClickData = false;
       vol = lastVol;
+      if(mounted){
+        setState(() {
+          animationObject = null;
+        });
+      }
     }
     return MhVolumeContext(
       onVolChange: onVolChange,
@@ -123,7 +184,8 @@ class MhVolumeWidgetState extends State<MhVolumeWidget> {
         ),
         Positioned.fill(
           child: MhVolumeValueWidget(
-            vol: vol,
+            precision:precision,
+            vol: animationObject?.value ?? vol,
             style: widget.style,
           ),
         ),
@@ -131,13 +193,6 @@ class MhVolumeWidgetState extends State<MhVolumeWidget> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    positivePainter = new Paint()
-      ..color = widget.style.mhStyle.volumeLineColor
-      ..style = PaintingStyle.fill;
-  }
 }
 
 class MhVolumeWidget extends StatefulWidget {

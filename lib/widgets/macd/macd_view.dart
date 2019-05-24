@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:candlesticks/2d/uiobjects/uio_path.dart';
 import 'package:candlesticks/widgets/candlesticks_context_widget.dart';
 import 'package:candlesticks/widgets/macd/macd_context.dart';
@@ -27,6 +29,7 @@ class MacdCandlesView extends UIAnimatedView<UIOCandles, UIOCandle> {
 
   int middleDuration;
   double newDuration;
+
 
   MacdCandlesView({
     this.positivePainter,
@@ -81,7 +84,7 @@ class MacdCandlesView extends UIAnimatedView<UIOCandles, UIOCandle> {
             ? positivePainter
             : negativePainter,
         index: extCandleData.index);
-    macdContext.onMacdChange(deaValue, dif, (dif - deaValue) * 2);
+    macdContext.onMacdChange(candleData.index,deaValue, dif, (dif - deaValue) * 2);
     return candleUIObject;
   }
 
@@ -358,7 +361,7 @@ class DIFView extends UIAnimatedView<UIOPath, UIOPoint> {
   }
 }
 
-class MACDWidgetState extends State<MACDWidget> {
+class MACDWidgetState extends State<MACDWidget> with SingleTickerProviderStateMixin{
   AABBContext aabbContext;
   CandlesticksContext candlesticksContext;
   Paint positivePainter;
@@ -373,9 +376,32 @@ class MACDWidgetState extends State<MACDWidget> {
   double lastDea;
   double lastMacd;
 
+
+  AnimationController _controller;
+  Animation<MACDValueData> animationObject;
+  Timer animationStartTimer;
+  bool startAnimationShow = false;
+  bool isShowClickData = false;//是否正在显示指定时间点的指标
+
   MACDValueData macdValueData = MACDValueData();
 
-  onMacdChange(double dea, double dif, double macd) {
+
+  ///
+  void startAnimation(){
+    if(animationStartTimer == null){
+      animationStartTimer = Timer(const Duration(seconds: 2), (){
+        startAnimationShow = true;
+      });
+    }
+  }
+
+  ///
+  onMacdChange(int index,double dea, double dif, double macd) {
+    startAnimation();
+
+    MACDValueData begin = macdValueData.clone();
+
+    macdValueData = MACDValueData();
     macdValueData.put(MACDValueKey.S, widget.style.macdStyle.S.toDouble());
     macdValueData.put(MACDValueKey.M, widget.style.macdStyle.M.toDouble());
     macdValueData.put(MACDValueKey.L, widget.style.macdStyle.L.toDouble());
@@ -387,11 +413,23 @@ class MACDWidgetState extends State<MACDWidget> {
       macdValueData.put(MACDValueKey.DEA, dea);
       macdValueData.put(MACDValueKey.DIF, dif);
       macdValueData.put(MACDValueKey.MACD, macd);
-      if (mounted) {
-        setState(() {});
+
+      if(startAnimationShow){
+        animationObject = null;
+        _controller.reset();
+        animationObject = Tween(begin: begin,end: macdValueData).animate(_controller);
+        animationObject.addListener((){
+          setState(() {});
+        });
+        _controller.forward();
       }
+    } else {
+      animationObject = null;
+      _controller?.stop();
     }
   }
+
+
 
   @override
   void didChangeDependencies() {
@@ -459,7 +497,7 @@ class MACDWidgetState extends State<MACDWidget> {
           ),
           Positioned.fill(
             child: MACDValueWidget(
-              macdValueData: macdValueData,
+              macdValueData: animationObject?.value ?? macdValueData,
               style: widget.style,
             ),
           ),
@@ -471,6 +509,8 @@ class MACDWidgetState extends State<MACDWidget> {
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(vsync: this,duration: Duration(milliseconds: 500));
+
     positivePainter = new Paint()
       ..color = widget.style.candlesStyle.positiveColor
       ..style = PaintingStyle.fill;
@@ -479,8 +519,19 @@ class MACDWidgetState extends State<MACDWidget> {
       ..style = PaintingStyle.fill;
   }
 
+  @override
+  void dispose() {
+    _controller?.dispose();
+    animationStartTimer?.cancel();
+    animationStartTimer = null;
+    super.dispose();
+  }
+
+
+
   void setThisPositionMacd(){
-    if (candlesticksContext.extCandleData == null) {
+    if (candlesticksContext.extCandleData == null && isShowClickData) {
+      isShowClickData = false;
       if (lastDea != null) {
         macdValueData.put(MACDValueKey.DEA, lastDea);
       } else {
@@ -496,8 +547,14 @@ class MACDWidgetState extends State<MACDWidget> {
       } else {
         macdValueData.remove(MACDValueKey.MACD);
       }
+      if(mounted){
+        setState(() {
+          animationObject = null;
+        });
+      }
     } else if (candlesticksContext != null &&
         candlesticksContext.extCandleData != null) {
+      isShowClickData = true;
       if (deaMap.containsKey(candlesticksContext.extCandleData.index)) {
         macdValueData.put(
             MACDValueKey.DEA, deaMap[candlesticksContext.extCandleData.index]);
@@ -516,7 +573,11 @@ class MACDWidgetState extends State<MACDWidget> {
       } else {
         macdValueData.remove(MACDValueKey.MACD);
       }
+      if(mounted){
+        setState(() {});
+      }
     }
+
   }
 }
 

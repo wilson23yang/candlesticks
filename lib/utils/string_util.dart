@@ -66,7 +66,7 @@ class StringUtil{
         String str = numStr;
         if(str.contains('.')){
           int p = str.length - str.indexOf('.') - 1;
-          if(p < 4){
+          if(p < defaultPrecision){
             p = precision;
           }
           precision = p;

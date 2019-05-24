@@ -11,6 +11,7 @@ class MaValuePainter extends CustomPainter {
   final double paddingY;
   final CandlesticksStyle style;
   final MaType maType;
+  final int precision;
 
   MaValueData maValueData;
 
@@ -20,6 +21,7 @@ class MaValuePainter extends CustomPainter {
     this.style,
     this.maValueData,
     this.maType = MaType.price,
+    this.precision,
   });
 
 
@@ -45,23 +47,23 @@ class MaValuePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if(maType == MaType.price){
-      int precision = StringUtil.getPrecision(maValueData?.currentValue?.toStringAsFixed(style.fractionDigits));
+      //int precision = StringUtil.getPrecision(maValueData?.currentValue?.toStringAsFixed(style.fractionDigits));
       if(StringUtil.isEmpty(maValueData?.currentValue?.toStringAsFixed(style.fractionDigits))){
         return;
       }
-      double x = paintLabel(canvas, size, 0, "Current:" + StringUtil.formatAssetNum(maValueData?.currentValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.currentColor);
+      double x = paintLabel(canvas, size, 0, "Current:" + StringUtil.formatAssetNum(maValueData?.currentValue, precision), style.maStyle.currentColor);
       if(StringUtil.isEmpty(maValueData?.shortValue?.toStringAsFixed(style.fractionDigits))){
         return;
       }
-      x += paintLabel(canvas, size, x, "MA${style.maStyle.shortCount}:" + StringUtil.formatAssetNum(maValueData?.shortValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.shortColor);
+      x += paintLabel(canvas, size, x, "MA${style.maStyle.shortCount}:" + StringUtil.formatAssetNum(maValueData?.shortValue, precision), style.maStyle.shortColor);
       if(StringUtil.isEmpty(maValueData?.middleValue?.toStringAsFixed(style.fractionDigits))){
         return;
       }
-      x += paintLabel(canvas, size, x, "MA${style.maStyle.middleCount}:" + StringUtil.formatAssetNum(maValueData?.middleValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.middleColor);
+      x += paintLabel(canvas, size, x, "MA${style.maStyle.middleCount}:" + StringUtil.formatAssetNum(maValueData?.middleValue, precision), style.maStyle.middleColor);
       if(StringUtil.isEmpty(maValueData?.longValue?.toStringAsFixed(style.fractionDigits))){
         return;
       }
-      x += paintLabel(canvas, size, x, "MA${style.maStyle.longCount}:" + StringUtil.formatAssetNum(maValueData?.longValue?.toStringAsFixed(style.fractionDigits), precision), style.maStyle.longColor);
+      x += paintLabel(canvas, size, x, "MA${style.maStyle.longCount}:" + StringUtil.formatAssetNum(maValueData?.longValue, precision), style.maStyle.longColor);
     } else {
       if(StringUtil.isEmpty(maValueData?.currentValue?.toStringAsFixed(style.fractionDigits))){
         return;
@@ -110,12 +112,14 @@ class MaValueWidget extends StatelessWidget {
     this.style,
     this.paddingY,
     this.maType = MaType.price,
+    this.precision,
   }) : super(key: key);
 
   final MaValueData maValueData;
   final double paddingY;
   final CandlesticksStyle style;
   final MaType maType;
+  final int precision;
 
   @override
   Widget build(BuildContext context) {
@@ -132,6 +136,7 @@ class MaValueWidget extends StatelessWidget {
           paddingY: paddingY,
           style: this.style,
           maType: this.maType,
+          precision: precision,
         ),
         size: Size.infinite
     );

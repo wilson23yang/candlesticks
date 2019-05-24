@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:candlesticks/utils/string_util.dart';
 import 'package:candlesticks/widgets/candlesticks_context_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:candlesticks/2d/uiobjects/uio_path.dart';
@@ -112,9 +115,18 @@ class MaView extends UIAnimatedView<UIOPath, UIOPoint> {
   }
 }
 
-class MaWidgetState extends State<MaWidget> {
+class MaWidgetState extends State<MaWidget> with SingleTickerProviderStateMixin{
   AABBContext aabbContext;
   CandlesticksContext candlesticksContext;
+
+  AnimationController _controller;
+  Animation<MaValueData> animationObject;
+  Timer _animationStartTimer;
+  bool startAnimationShow = false;
+  bool isShowClickData = false; //是否正在显示指定时间点的指标
+
+  MaValueData maValueData;
+
   Map<int, double> maShort = <int, double>{};
   Map<int, double> maMiddle = <int, double>{};
   Map<int, double> maLong = <int, double>{};
@@ -124,6 +136,14 @@ class MaWidgetState extends State<MaWidget> {
   var lastMaLong;
   var lastCurrent;
 
+
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -131,12 +151,41 @@ class MaWidgetState extends State<MaWidget> {
     candlesticksContext = CandlesticksContext.of(context);
   }
 
-  MaValueData maValueData;
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _animationStartTimer?.cancel();
+    super.dispose();
+  }
+
+  ///
+  void startAnimation() {
+    if (_animationStartTimer == null) {
+      _animationStartTimer = Timer(const Duration(seconds: 2), () {
+        startAnimationShow = true;
+      });
+    }
+  }
+
+  bool updateShort = false;
+  bool updateMiddle = false;
+  bool updateLong = false;
+  MaValueData begin;
+  int precision = 1;
+
+
 
   onMaChange(int count, double value, double currentValue) {
+    startAnimation();
+    precision = StringUtil.getPrecision(currentValue, defaultPrecision: 1);
     if (maValueData == null) {
       maValueData = MaValueData();
     }
+    if (!updateShort && !updateMiddle && !updateLong) {
+      begin = maValueData.clone();
+    }
+
     if (widget.style.maStyle.shortCount == count) {
       lastMaShort = value;
     }
@@ -148,28 +197,48 @@ class MaWidgetState extends State<MaWidget> {
     }
     lastCurrent = currentValue;
     if (candlesticksContext?.extCandleData != null) {
+      if(mounted){
+        setState(() {
+          animationObject = null;
+        });
+      }
       return;
     }
-    if (count == widget.style.maStyle.shortCount) {
-      maValueData = MaValueData(
-          shortValue: value,
-          middleValue: maValueData?.middleValue,
-          longValue: maValueData?.longValue,
-          currentValue: currentValue);
-    } else if (count == widget.style.maStyle.middleCount) {
-      maValueData = MaValueData(
-          shortValue: maValueData?.shortValue,
-          middleValue: value,
-          longValue: maValueData?.longValue,
-          currentValue: currentValue);
-    } else {
-      maValueData = MaValueData(
-          shortValue: maValueData?.shortValue,
-          middleValue: maValueData?.middleValue,
-          longValue: value,
-          currentValue: currentValue);
+    if (count == widget.style.maStyle.shortCount && !updateShort) {
+      if (startAnimationShow) {
+        updateShort = true;
+      }
+      maValueData = maValueData.clone()
+        ..currentValue = currentValue
+        ..shortValue = value;
+    } else if (count == widget.style.maStyle.middleCount && !updateMiddle) {
+      if (startAnimationShow) {
+        updateMiddle = true;
+      }
+      maValueData = maValueData.clone()
+        ..currentValue = currentValue
+        ..middleValue = value;
+    } else if (count == widget.style.maStyle.longCount && !updateLong){
+      if (startAnimationShow) {
+        updateLong = true;
+      }
+      maValueData = maValueData.clone()
+        ..currentValue = currentValue
+        ..longValue = value;
     }
-    setState(() {});
+    if (startAnimationShow && updateShort && updateMiddle && updateLong) {
+      animationObject = null;
+      _controller.reset();
+      animationObject =
+          Tween(begin: begin, end: maValueData).animate(_controller);
+      animationObject.addListener(() {
+        setState(() {});
+      });
+      _controller.forward();
+      updateShort = false;
+      updateMiddle = false;
+      updateLong = false;
+    }
   }
 
   @override
@@ -218,7 +287,8 @@ class MaWidgetState extends State<MaWidget> {
           ),
           Positioned.fill(
             child: MaValueWidget(
-              maValueData: maValueData,
+              precision: precision,
+              maValueData: animationObject?.value ?? maValueData,
               style: widget.style,
               maType: widget.maType,
             ),
@@ -232,6 +302,7 @@ class MaWidgetState extends State<MaWidget> {
   void setThisPositionMa() {
     MaValueData tempMaValueData;
     if (candlesticksContext?.extCandleData != null) {
+      isShowClickData = true;
       tempMaValueData = MaValueData();
       if (maShort.containsKey(candlesticksContext.extCandleData.index)) {
         tempMaValueData.shortValue =
@@ -247,7 +318,15 @@ class MaWidgetState extends State<MaWidget> {
       }
       tempMaValueData.currentValue =
           maCurrent[candlesticksContext.extCandleData.index];
-    } else {
+      maValueData = tempMaValueData;
+      if (mounted) {
+        setState(() {
+          animationObject = null;
+        });
+      }
+    } else if (candlesticksContext == null ||
+        candlesticksContext.extCandleData == null && isShowClickData){
+      isShowClickData = false;
       tempMaValueData = MaValueData();
       if (lastMaShort != null) {
         tempMaValueData.shortValue = lastMaShort;
@@ -259,9 +338,13 @@ class MaWidgetState extends State<MaWidget> {
         tempMaValueData.longValue = lastMaLong;
       }
       tempMaValueData.currentValue = lastCurrent;
+      maValueData = tempMaValueData;
+      if (mounted) {
+        setState(() {
+          animationObject = null;
+        });
+      }
     }
-    maValueData = tempMaValueData;
-    setState(() {});
   }
 }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MACDContext extends InheritedWidget {
-  final Function(double dea,double dif,double macd) onMacdChange;
+  final Function(int index,double dea,double dif,double macd) onMacdChange;
 
   MACDContext({
     Key key,

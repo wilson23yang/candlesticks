@@ -49,7 +49,7 @@ class MACDValuePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.drawLine(Offset(0, 0), Offset(size.width, 0), linePaint);
     double x = 0;
-    if (macdValueData.containsKey(MACDValueKey.S)) {
+    if (macdValueData?.containsKey(MACDValueKey.S) ?? false) {
       x = paintLabel(
           canvas,
           size,
@@ -59,7 +59,7 @@ class MACDValuePainter extends CustomPainter {
               "${macdValueData.get(MACDValueKey.M).toInt()})",
           style.macdStyle.macdColor);
     }
-    if (macdValueData.containsKey(MACDValueKey.MACD)) {
+    if (macdValueData?.containsKey(MACDValueKey.MACD) ?? false) {
       x += paintLabel(
           canvas,
           size,
@@ -69,7 +69,7 @@ class MACDValuePainter extends CustomPainter {
                   macdValueData.get(MACDValueKey.MACD), 6),
           style.macdStyle.macdColor);
     }
-    if (macdValueData.containsKey(MACDValueKey.DIF)) {
+    if (macdValueData?.containsKey(MACDValueKey.DIF) ?? false) {
       x += paintLabel(
           canvas,
           size,
@@ -78,7 +78,7 @@ class MACDValuePainter extends CustomPainter {
               StringUtil.formatAssetNum(macdValueData.get(MACDValueKey.DIF), 6),
           style.macdStyle.difColor);
     }
-    if (macdValueData.containsKey(MACDValueKey.DEA)) {
+    if (macdValueData?.containsKey(MACDValueKey.DEA) ?? false) {
       x += paintLabel(
           canvas,
           size,
