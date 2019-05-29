@@ -97,7 +97,7 @@ class MHPriceWidgetState extends State<MHPriceWidget> {
                 child: UIAnimatedWidget<UIOPath, UIOPoint>(
                   dataStream: widget.dataStream,
                   uiCamera: uiCamera,
-                  duration: const Duration(seconds: 0),
+                  duration: const Duration(milliseconds: 500),
                   state: () =>
                       MHPriceView(widget.style.mhStyle.lineColor,widget.style.mhStyle.lineWidth),
                 )

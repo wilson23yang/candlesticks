@@ -250,6 +250,7 @@ class MaWidgetState extends State<MaWidget> with SingleTickerProviderStateMixin{
       child: Stack(
         children: <Widget>[
           Positioned.fill(
+            top: 15,
             child: UIAnimatedWidget<UIOPath, UIOPoint>(
               dataStream: widget.dataStream,
               uiCamera: uiCamera,
@@ -263,6 +264,7 @@ class MaWidgetState extends State<MaWidget> with SingleTickerProviderStateMixin{
             ),
           ),
           Positioned.fill(
+            top: 15,
             child: UIAnimatedWidget<UIOPath, UIOPoint>(
               dataStream: widget.dataStream,
               uiCamera: uiCamera,
@@ -274,6 +276,7 @@ class MaWidgetState extends State<MaWidget> with SingleTickerProviderStateMixin{
             ),
           ),
           Positioned.fill(
+            top: 15,
             child: UIAnimatedWidget<UIOPath, UIOPoint>(
               dataStream: widget.dataStream,
               uiCamera: uiCamera,

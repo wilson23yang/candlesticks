@@ -1,4 +1,5 @@
 import 'package:candlesticks/utils/canvas_util.dart';
+import 'package:candlesticks/utils/string_util.dart';
 import 'package:flutter/material.dart';
 import 'package:candlesticks/2d/candle_data.dart';
 import 'package:candlesticks/2d/uiobjects/uio_point.dart';
@@ -6,15 +7,17 @@ import 'package:candlesticks/2d/uicamera.dart';
 import 'package:candlesticks/widgets/aabb/aabb_context.dart';
 import 'package:candlesticks/widgets/candlesticks_style.dart';
 
+///
 class TopFloatingPainter extends CustomPainter {
-  final ExtCandleData lastCandleData;
+  final AnimationCandleData lastCandleData;
   final UICamera uiCamera;
   final CandlesticksStyle style;
   final double durationMs;
   final bool showPoint;
   final bool showLabel;
-  final Animation opacityAnimation;
-  final Animation sizeAnimation;
+  final double opacity;
+  final double pointRadius;
+  final int precision;
 
   Paint lastPointPainter;
   Paint lastLabelTextPainter;
@@ -29,8 +32,9 @@ class TopFloatingPainter extends CustomPainter {
     this.lastCandleData,
     this.showLabel,
     this.showPoint,
-    this.opacityAnimation,
-    this.sizeAnimation,
+    this.opacity,
+    this.pointRadius,
+    this.precision,
   });
 
   TextPainter calLabel(Canvas canvas, Size size, String text) {
@@ -85,7 +89,8 @@ class TopFloatingPainter extends CustomPainter {
         dashLinePainter.style = PaintingStyle.stroke;
       }
 
-      var labelText = calLabel(canvas, size, lastCandleData.close.toString());
+      var labelText = calLabel(canvas, size, StringUtil.formatAssetNum(
+          lastCandleData.close.toString(), precision));
 
       double textWidth = labelText.width;
       double textHeight = labelText.height;
@@ -153,7 +158,7 @@ class TopFloatingPainter extends CustomPainter {
           rightPointYMax = textWidth / 2 + vGap;
         }
         Offset originPoint =
-            Offset(rightPointXMax, rightPointYMax - textHeight / 2.0 - vGap);
+        Offset(rightPointXMax, rightPointYMax - textHeight / 2.0 - vGap);
         path.moveTo(originPoint.dx, originPoint.dy);
         path.lineTo(originPoint.dx - lGap - textWidth - rGap, originPoint.dy);
         path.lineTo(originPoint.dx - lGap - textWidth - rGap - aGap,
@@ -182,19 +187,22 @@ class TopFloatingPainter extends CustomPainter {
       if (lastPointPainter == null) {
         lastPointPainter = Paint();
         lastPointPainter.color =
-            style.mhStyle.pointColor.withOpacity(opacityAnimation.value);
+            style.mhStyle.pointColor.withOpacity(opacity);
         lastPointPainter.style = PaintingStyle.fill;
       }
       canvas.drawCircle(realPoint,
-          style.mhStyle.pointRadius + sizeAnimation.value, lastPointPainter);
+          style.mhStyle.pointRadius + pointRadius,
+          lastPointPainter);
     }
   }
 
   @override
   bool shouldRepaint(TopFloatingPainter oldPainter) {
     return this?.lastCandleData?.durationMs !=
-            oldPainter?.lastCandleData?.durationMs ||
-        this?.lastCandleData?.close != oldPainter?.lastCandleData?.close;
+        oldPainter?.lastCandleData?.durationMs ||
+        this?.lastCandleData?.close != oldPainter?.lastCandleData?.close ||
+        this?.opacity != oldPainter?.opacity ||
+        this?.pointRadius != oldPainter?.pointRadius;
   }
 
   @override
@@ -203,6 +211,7 @@ class TopFloatingPainter extends CustomPainter {
   }
 }
 
+///
 class LastPointFloatingWidget extends StatefulWidget {
   LastPointFloatingWidget({
     Key key,
@@ -224,34 +233,40 @@ class LastPointFloatingWidget extends StatefulWidget {
       _LastPointFloatingWidgetState();
 }
 
+///
 class _LastPointFloatingWidgetState extends State<LastPointFloatingWidget>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   AnimationController _controller;
-  Animation opacityAnimation;
-  Animation sizeAnimation;
+  AnimationController _candleDataController;
+  Animation<double> opacityAnimation;
+  Animation<double> radiusAnimation;
+  Animation<AnimationCandleData> _candleDataAnimation;
+  AnimationCandleData _beginCandleData;
 
   @override
   void initState() {
     super.initState();
-    _controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    CurvedAnimation ca = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.linear,
+    _candleDataController = AnimationController( //
+      vsync: this, //
+      duration: const Duration(milliseconds: 500),
     );
-    opacityAnimation = Tween(begin: 0.8, end: 1.0).animate(ca);
-    sizeAnimation = Tween(begin: 0.0, end: 1.5).animate(ca);
+
+    _controller = AnimationController(
+      vsync: this, //
+      duration: const Duration(milliseconds: 1000),
+    );
+    opacityAnimation = Tween(begin: 0.5, end: 0.9).animate(_controller);
+    radiusAnimation = Tween(begin: 1.5, end: 1.5).animate(_controller);
     opacityAnimation.addListener(() {
-      if (opacityAnimation.value == 1.0) {
-        _controller.reverse();
-      } else if (opacityAnimation.value == 0.8) {
-        _controller.forward();
-      }
+      setState(() {});
     });
-    sizeAnimation.addListener(() {
-      if (sizeAnimation.value == 1.5) {
+    radiusAnimation.addListener(() {
+      setState(() {});
+    });
+    _controller.addStatusListener((AnimationStatus s) {
+      if (s == AnimationStatus.completed) {
         _controller.reverse();
-      } else if (sizeAnimation.value == 0.0) {
+      } else if (s == AnimationStatus.dismissed) {
         _controller.forward();
       }
     });
@@ -260,7 +275,8 @@ class _LastPointFloatingWidgetState extends State<LastPointFloatingWidget>
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
+    _candleDataController?.dispose();
     super.dispose();
   }
 
@@ -269,18 +285,152 @@ class _LastPointFloatingWidgetState extends State<LastPointFloatingWidget>
     if (widget.lastCandleData == null) {
       return Container();
     }
-    var uiCamera = AABBContext.of(context).uiCamera;
+    var uiCamera = AABBContext
+        .of(context)
+        .uiCamera;
+
+    _beginCandleData = addCandleDataAnimation(
+      begin: _beginCandleData,
+      end: AnimationCandleData.from(widget.lastCandleData),
+    );
     return CustomPaint(
       painter: TopFloatingPainter(
         style: widget.style,
         uiCamera: uiCamera,
-        lastCandleData: widget.lastCandleData,
+        lastCandleData: _candleDataAnimation?.value ??
+            AnimationCandleData.from(widget.lastCandleData),
         durationMs: widget.durationMs,
         showLabel: widget.showLabel,
         showPoint: widget.showPoint,
-        opacityAnimation: opacityAnimation,
-        sizeAnimation: sizeAnimation,
+        opacity: opacityAnimation?.value ?? 1.0,
+        pointRadius: radiusAnimation?.value ?? 2.0,
+        precision: StringUtil.getPrecision(widget.lastCandleData.close),
       ),
     );
   }
+
+  AnimationCandleData addCandleDataAnimation(
+      {AnimationCandleData begin, AnimationCandleData end,}) {
+    if (begin == null) {
+      _candleDataAnimation = null;
+      begin = end;
+    }
+    if (begin.close == end.close) {
+      return end;
+    }
+    _candleDataAnimation = null;
+    _candleDataController.reset();
+    Tween<AnimationCandleData> tween = Tween(begin: begin, end: end);
+    _candleDataAnimation = tween.animate(_candleDataController);
+    _candleDataAnimation.addListener(() {
+      try {
+        if (mounted) {
+          setState(() {});
+        }
+      } catch (_) {}
+    });
+    _candleDataController.forward();
+    return end;
+  }
+
 }
+
+
+///
+class AnimationCandleData {
+  final int timeMs;
+  final double open;
+  final double close;
+  final double high;
+  final double low;
+  final double volume;
+  final double durationMs;
+
+  AnimationCandleData({
+    this.timeMs,
+    this.open,
+    this.close,
+    this.high,
+    this.low,
+    this.volume,
+    this.durationMs,
+  });
+
+  AnimationCandleData.from(final ExtCandleData item)
+      : timeMs = item.timeMs,
+        open = item.open,
+        high = item.high,
+        low = item.low,
+        close = item.close,
+        volume = item.volume,
+        durationMs = item.durationMs;
+
+  AnimationCandleData operator -(AnimationCandleData other) {
+    if (other == null) {
+      return this;
+    }
+
+    return AnimationCandleData(
+      timeMs: this.timeMs - other.timeMs,
+      durationMs: this.durationMs,
+      open: this.open - other.open,
+      close: this.close - other.close,
+      high: this.high - other.high,
+      low: this.low - other.low,
+      volume: this.volume - other.volume,
+    );
+  }
+
+  AnimationCandleData operator +(AnimationCandleData other) {
+    if (other == null) {
+      return this;
+    }
+    return AnimationCandleData(
+      timeMs: this.timeMs + other.timeMs,
+      durationMs: this.durationMs,
+      open: this.open + other.open,
+      close: this.close + other.close,
+      high: this.high + other.high,
+      low: this.low + other.low,
+      volume: this.volume + other.volume,
+    );
+  }
+
+  AnimationCandleData operator *(double progress) {
+    return AnimationCandleData(
+      timeMs: (this.timeMs * progress).toInt(),
+      durationMs: this.durationMs,
+      open: this.open * progress,
+      close: this.close * progress,
+      high: this.high * progress,
+      low: this.low * progress,
+      volume: this.volume * progress,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is AnimationCandleData &&
+              runtimeType == other.runtimeType &&
+              timeMs == other.timeMs &&
+              open == other.open &&
+              close == other.close &&
+              high == other.high &&
+              low == other.low &&
+              volume == other.volume &&
+              durationMs == other.durationMs;
+
+  @override
+  int get hashCode =>
+      timeMs.hashCode ^
+      open.hashCode ^
+      close.hashCode ^
+      high.hashCode ^
+      low.hashCode ^
+      volume.hashCode ^
+      durationMs.hashCode;
+
+}
+
+
