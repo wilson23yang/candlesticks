@@ -58,7 +58,7 @@ class CandlesticksView extends CandlesticksState {
               key: globalKey,
               onCandleDataFinish: onCandleDataFinish,
               candlesX: candlesX,
-              extCandleData: extCandleData,
+              touchPointCandleData: extCandleData,
               touchPoint: touchPoint,
               touching: touching,
               lastCandleData: (candleDataList != null && candleDataList.isNotEmpty)

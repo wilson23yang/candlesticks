@@ -130,7 +130,7 @@ class MhVolumeWidgetState extends State<MhVolumeWidget> with SingleTickerProvide
     lastIndex = index;
     lastVol = volume;
     precision = StringUtil.getPrecision(lastVol,defaultPrecision: 1);
-    if(candlesticksContext?.extCandleData == null){
+    if(candlesticksContext?.touchPointCandleData == null){
       vol = lastVol;
       if(startAnimationShow){
         animationObject = null;
@@ -151,13 +151,13 @@ class MhVolumeWidgetState extends State<MhVolumeWidget> with SingleTickerProvide
   Widget build(BuildContext context) {
     var uiCamera = aabbContext?.uiCamera;
     if(candlesticksContext != null &&
-        candlesticksContext.extCandleData != null){
+        candlesticksContext.touchPointCandleData != null){
       isShowClickData = true;
-      vol = candlesticksContext?.extCandleData?.volume;
+      vol = candlesticksContext?.touchPointCandleData?.volume;
       if(mounted){
         setState(() {});
       }
-    } else if (candlesticksContext.extCandleData == null && isShowClickData){
+    } else if (candlesticksContext.touchPointCandleData == null && isShowClickData){
       isShowClickData = false;
       vol = lastVol;
       if(mounted){

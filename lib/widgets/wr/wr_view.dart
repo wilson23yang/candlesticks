@@ -211,7 +211,7 @@ class WrWidgetState extends State<WrWidget> with SingleTickerProviderStateMixin{
         updateLong = true;
       }*/
     }
-    if (candlesticksContext?.extCandleData != null) {
+    if (candlesticksContext?.touchPointCandleData != null) {
       animationObject = null;
       _controller?.stop();
       return;
@@ -291,27 +291,27 @@ class WrWidgetState extends State<WrWidget> with SingleTickerProviderStateMixin{
   ///设置指定时间点的Wr
   void setThisPositionWr(){
     if (candlesticksContext != null &&
-        candlesticksContext.extCandleData != null) {
+        candlesticksContext.touchPointCandleData != null) {
       isShowClickData = true;
-      if(wrShort.containsKey(candlesticksContext.extCandleData.index)){
-        wrValueData.put(widget.style.wrStyle.shortPeriod, wrShort[candlesticksContext.extCandleData.index]);
+      if(wrShort.containsKey(candlesticksContext.touchPointCandleData.index)){
+        wrValueData.put(widget.style.wrStyle.shortPeriod, wrShort[candlesticksContext.touchPointCandleData.index]);
       } else {
         wrValueData.remove(widget.style.wrStyle.shortPeriod);
       }
-      if(wrMiddle.containsKey(candlesticksContext.extCandleData.index)){
-        wrValueData.put(widget.style.wrStyle.middlePeriod, wrMiddle[candlesticksContext.extCandleData.index]);
+      if(wrMiddle.containsKey(candlesticksContext.touchPointCandleData.index)){
+        wrValueData.put(widget.style.wrStyle.middlePeriod, wrMiddle[candlesticksContext.touchPointCandleData.index]);
       } else {
         wrValueData.remove(widget.style.wrStyle.middlePeriod);
       }
-      if(wrLong.containsKey(candlesticksContext.extCandleData.index)){
-        wrValueData.put(widget.style.wrStyle.longPeriod, wrLong[candlesticksContext.extCandleData.index]);
+      if(wrLong.containsKey(candlesticksContext.touchPointCandleData.index)){
+        wrValueData.put(widget.style.wrStyle.longPeriod, wrLong[candlesticksContext.touchPointCandleData.index]);
       } else {
         wrValueData.remove(widget.style.wrStyle.longPeriod);
       }
       if(mounted){
         setState(() {});
       }
-    } else if (candlesticksContext.extCandleData == null && isShowClickData) {
+    } else if (candlesticksContext.touchPointCandleData == null && isShowClickData) {
       isShowClickData = false;
       if(lastWrShort != null){
         wrValueData.put(widget.style.wrStyle.shortPeriod, lastWrShort);

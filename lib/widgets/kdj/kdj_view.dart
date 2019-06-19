@@ -257,7 +257,7 @@ class KdjWidgetState extends State<KdjWidget> with SingleTickerProviderStateMixi
       }
     }
 
-    if (candlesticksContext.extCandleData != null) {
+    if (candlesticksContext.touchPointCandleData != null) {
       animationObject = null;
       _controller?.stop();
       return;
@@ -285,15 +285,15 @@ class KdjWidgetState extends State<KdjWidget> with SingleTickerProviderStateMixi
   Widget build(BuildContext context) {
     var uiCamera = aabbContext?.uiCamera;
     if (candlesticksContext != null &&
-        candlesticksContext.extCandleData != null) {
+        candlesticksContext.touchPointCandleData != null) {
       isShowClickData = true;
-      kdjValueData.put(KDJ.K, kMap[candlesticksContext.extCandleData.index]);
-      kdjValueData.put(KDJ.D, dMap[candlesticksContext.extCandleData.index]);
-      kdjValueData.put(KDJ.J, jMap[candlesticksContext.extCandleData.index]);
+      kdjValueData.put(KDJ.K, kMap[candlesticksContext.touchPointCandleData.index]);
+      kdjValueData.put(KDJ.D, dMap[candlesticksContext.touchPointCandleData.index]);
+      kdjValueData.put(KDJ.J, jMap[candlesticksContext.touchPointCandleData.index]);
       if(mounted){
         setState(() {});
       }
-    } else if (candlesticksContext.extCandleData == null && isShowClickData){
+    } else if (candlesticksContext.touchPointCandleData == null && isShowClickData){
       isShowClickData = false;
       kdjValueData.put(KDJ.K, lastK);
       kdjValueData.put(KDJ.D, lastD);

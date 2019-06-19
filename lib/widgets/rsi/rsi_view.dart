@@ -213,7 +213,7 @@ class RsiWidgetState extends State<RsiWidget> with SingleTickerProviderStateMixi
         updateLong = true;
       }
     }
-    if (candlesticksContext?.extCandleData != null) {
+    if (candlesticksContext?.touchPointCandleData != null) {
       animationObject = null;
       _controller?.stop();
       return;
@@ -291,27 +291,27 @@ class RsiWidgetState extends State<RsiWidget> with SingleTickerProviderStateMixi
   ///设置指定时间点的RSI
   void setThisPositionRsi(){
     if (candlesticksContext != null &&
-        candlesticksContext.extCandleData != null) {
+        candlesticksContext.touchPointCandleData != null) {
       isShowClickData = true;
-      if(rsiShort.containsKey(candlesticksContext.extCandleData.index)){
-        rsiValueData.put(widget.style.rsiStyle.shortPeriod, rsiShort[candlesticksContext.extCandleData.index]);
+      if(rsiShort.containsKey(candlesticksContext.touchPointCandleData.index)){
+        rsiValueData.put(widget.style.rsiStyle.shortPeriod, rsiShort[candlesticksContext.touchPointCandleData.index]);
       } else {
         rsiValueData.remove(widget.style.rsiStyle.shortPeriod);
       }
-      if(rsiMiddle.containsKey(candlesticksContext.extCandleData.index)){
-        rsiValueData.put(widget.style.rsiStyle.middlePeriod, rsiMiddle[candlesticksContext.extCandleData.index]);
+      if(rsiMiddle.containsKey(candlesticksContext.touchPointCandleData.index)){
+        rsiValueData.put(widget.style.rsiStyle.middlePeriod, rsiMiddle[candlesticksContext.touchPointCandleData.index]);
       } else {
         rsiValueData.remove(widget.style.rsiStyle.middlePeriod);
       }
-      if(rsiLong.containsKey(candlesticksContext.extCandleData.index)){
-        rsiValueData.put(widget.style.rsiStyle.longPeriod, rsiLong[candlesticksContext.extCandleData.index]);
+      if(rsiLong.containsKey(candlesticksContext.touchPointCandleData.index)){
+        rsiValueData.put(widget.style.rsiStyle.longPeriod, rsiLong[candlesticksContext.touchPointCandleData.index]);
       } else {
         rsiValueData.remove(widget.style.rsiStyle.longPeriod);
       }
       if(mounted){
         setState(() {});
       }
-    } else if (candlesticksContext.extCandleData == null && isShowClickData) {
+    } else if (candlesticksContext.touchPointCandleData == null && isShowClickData) {
       isShowClickData = false;
       if(lastRsiShort != null){
         rsiValueData.put(widget.style.rsiStyle.shortPeriod, lastRsiShort);

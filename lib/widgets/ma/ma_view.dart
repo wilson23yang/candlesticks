@@ -196,7 +196,7 @@ class MaWidgetState extends State<MaWidget> with SingleTickerProviderStateMixin{
       lastMaLong = value;
     }
     lastCurrent = currentValue;
-    if (candlesticksContext?.extCandleData != null) {
+    if (candlesticksContext?.touchPointCandleData != null) {
       if(mounted){
         setState(() {
           animationObject = null;
@@ -304,23 +304,23 @@ class MaWidgetState extends State<MaWidget> with SingleTickerProviderStateMixin{
   ///设置指定时间点的MA
   void setThisPositionMa() {
     MaValueData tempMaValueData;
-    if (candlesticksContext?.extCandleData != null) {
+    if (candlesticksContext?.touchPointCandleData != null) {
       isShowClickData = true;
       tempMaValueData = MaValueData();
-      if (maShort.containsKey(candlesticksContext.extCandleData.index)) {
+      if (maShort.containsKey(candlesticksContext.touchPointCandleData.index)) {
         tempMaValueData.shortValue =
-            maShort[candlesticksContext.extCandleData.index];
+            maShort[candlesticksContext.touchPointCandleData.index];
       }
-      if (maMiddle.containsKey(candlesticksContext.extCandleData.index)) {
+      if (maMiddle.containsKey(candlesticksContext.touchPointCandleData.index)) {
         tempMaValueData.middleValue =
-            maMiddle[candlesticksContext.extCandleData.index];
+            maMiddle[candlesticksContext.touchPointCandleData.index];
       }
-      if (maLong.containsKey(candlesticksContext.extCandleData.index)) {
+      if (maLong.containsKey(candlesticksContext.touchPointCandleData.index)) {
         tempMaValueData.longValue =
-            maLong[candlesticksContext.extCandleData.index];
+            maLong[candlesticksContext.touchPointCandleData.index];
       }
       tempMaValueData.currentValue =
-          maCurrent[candlesticksContext.extCandleData.index];
+          maCurrent[candlesticksContext.touchPointCandleData.index];
       maValueData = tempMaValueData;
       if (mounted) {
         setState(() {
@@ -328,7 +328,7 @@ class MaWidgetState extends State<MaWidget> with SingleTickerProviderStateMixin{
         });
       }
     } else if (candlesticksContext == null ||
-        candlesticksContext.extCandleData == null && isShowClickData){
+        candlesticksContext.touchPointCandleData == null && isShowClickData){
       isShowClickData = false;
       tempMaValueData = MaValueData();
       if (lastMaShort != null) {

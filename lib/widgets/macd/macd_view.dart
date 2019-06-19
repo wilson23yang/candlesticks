@@ -409,7 +409,7 @@ class MACDWidgetState extends State<MACDWidget> with SingleTickerProviderStateMi
     lastDea = dea;
     lastDif = dif;
     lastMacd = macd;
-    if (candlesticksContext.extCandleData == null) {
+    if (candlesticksContext.touchPointCandleData == null) {
       macdValueData.put(MACDValueKey.DEA, dea);
       macdValueData.put(MACDValueKey.DIF, dif);
       macdValueData.put(MACDValueKey.MACD, macd);
@@ -530,7 +530,7 @@ class MACDWidgetState extends State<MACDWidget> with SingleTickerProviderStateMi
 
 
   void setThisPositionMacd(){
-    if (candlesticksContext.extCandleData == null && isShowClickData) {
+    if (candlesticksContext.touchPointCandleData == null && isShowClickData) {
       isShowClickData = false;
       if (lastDea != null) {
         macdValueData.put(MACDValueKey.DEA, lastDea);
@@ -553,23 +553,23 @@ class MACDWidgetState extends State<MACDWidget> with SingleTickerProviderStateMi
         });
       }
     } else if (candlesticksContext != null &&
-        candlesticksContext.extCandleData != null) {
+        candlesticksContext.touchPointCandleData != null) {
       isShowClickData = true;
-      if (deaMap.containsKey(candlesticksContext.extCandleData.index)) {
+      if (deaMap.containsKey(candlesticksContext.touchPointCandleData.index)) {
         macdValueData.put(
-            MACDValueKey.DEA, deaMap[candlesticksContext.extCandleData.index]);
+            MACDValueKey.DEA, deaMap[candlesticksContext.touchPointCandleData.index]);
       } else {
         macdValueData.remove(MACDValueKey.DEA);
       }
-      if (difMap.containsKey(candlesticksContext.extCandleData.index)) {
+      if (difMap.containsKey(candlesticksContext.touchPointCandleData.index)) {
         macdValueData.put(
-            MACDValueKey.DIF, difMap[candlesticksContext.extCandleData.index]);
+            MACDValueKey.DIF, difMap[candlesticksContext.touchPointCandleData.index]);
       } else {
         macdValueData.remove(MACDValueKey.DIF);
       }
-      if (macdMap.containsKey(candlesticksContext.extCandleData.index)) {
+      if (macdMap.containsKey(candlesticksContext.touchPointCandleData.index)) {
         macdValueData.put(MACDValueKey.MACD,
-            macdMap[candlesticksContext.extCandleData.index]);
+            macdMap[candlesticksContext.touchPointCandleData.index]);
       } else {
         macdValueData.remove(MACDValueKey.MACD);
       }

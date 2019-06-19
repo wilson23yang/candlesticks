@@ -10,9 +10,8 @@ import 'package:candlesticks/widgets/aabb/aabb_context.dart';
 
 const ZERO = 0.00000001;
 
-abstract class UIAnimatedState<T extends UIObjects<TT,
-    T>, TT extends UIAnimatedObject<
-    TT>> extends State<UIAnimatedWidget<T, TT>>
+abstract class UIAnimatedState<T extends UIObjects<TT,T>, TT extends UIAnimatedObject<TT>>
+    extends State<UIAnimatedWidget<T, TT>>
     with TickerProviderStateMixin {
 
   final int animationCount;
@@ -20,7 +19,7 @@ abstract class UIAnimatedState<T extends UIObjects<TT,
   AnimationController uiObjectAnimationController;
   Animation<T> uiAnimatedObject;
   StreamSubscription<ExtCandleData> subscription;
-  AABBContext candlesticksContext;
+  AABBContext aabbContext;
 
   T getCandles();
 
@@ -41,8 +40,7 @@ abstract class UIAnimatedState<T extends UIObjects<TT,
     if (point == null) {
       return;
     }
-    candlesticksContext.onAABBChange(
-        candleData, point);
+    aabbContext.onAABBChange(candleData, point);
 
     if (uiAnimatedObject == null) {
       T endPath = getCandles();
@@ -128,7 +126,7 @@ abstract class UIAnimatedState<T extends UIObjects<TT,
   @override void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    candlesticksContext = AABBContext.of(context);
+    aabbContext = AABBContext.of(context);
   }
 
   @override
@@ -146,7 +144,11 @@ abstract class UIAnimatedState<T extends UIObjects<TT,
   }
 }
 
-abstract class UIAnimatedView<T extends UIObjects<TT, T>, TT extends UIAnimatedObject<TT>> extends UIAnimatedState<T, TT> {
+abstract class UIAnimatedView<//
+                T extends UIObjects<TT, T>, //
+                TT extends UIAnimatedObject<TT>//
+               > //
+               extends UIAnimatedState<T, TT> {
 
   UIAnimatedView({animationCount}) : super(animationCount:animationCount);
 
@@ -181,8 +183,11 @@ abstract class UIAnimatedView<T extends UIObjects<TT, T>, TT extends UIAnimatedO
   }
 }
 
-class UIAnimatedWidget<T extends UIObjects<TT, T>, TT extends UIAnimatedObject<
-    TT>> extends StatefulWidget {
+class UIAnimatedWidget<//
+        T extends UIObjects<TT, T>, //
+        TT extends UIAnimatedObject<TT>//
+      > //
+    extends StatefulWidget {
 
   UIAnimatedWidget({
     Key key,

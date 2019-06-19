@@ -227,7 +227,7 @@ class BollWidgetState extends State<BollWidget>
       lastDn = boll;
     }
     if (candlesticksContext == null ||
-        candlesticksContext.extCandleData == null) {
+        candlesticksContext.touchPointCandleData == null) {
       if (type == BollLine.MB && !updateMB) {
         if (startAnimationShow) {
           updateMB = true;
@@ -319,7 +319,7 @@ class BollWidgetState extends State<BollWidget>
 
   void setThisPositionBoll() {
     if (candlesticksContext == null ||
-        candlesticksContext.extCandleData == null && isShowClickData) {
+        candlesticksContext.touchPointCandleData == null && isShowClickData) {
       isShowClickData = false;
       bollValueData = BollValueData(
         bollValue: lastMb,
@@ -333,13 +333,13 @@ class BollWidgetState extends State<BollWidget>
         });
       }
     } else if (candlesticksContext != null &&
-        candlesticksContext.extCandleData != null) {
+        candlesticksContext.touchPointCandleData != null) {
       isShowClickData = true;
       bollValueData = BollValueData(
-        bollValue: mbMap[candlesticksContext.extCandleData.index],
-        currentValue: curMap[candlesticksContext.extCandleData.index],
-        ubValue: upMap[candlesticksContext.extCandleData.index],
-        lbValue: dnMap[candlesticksContext.extCandleData.index],
+        bollValue: mbMap[candlesticksContext.touchPointCandleData.index],
+        currentValue: curMap[candlesticksContext.touchPointCandleData.index],
+        ubValue: upMap[candlesticksContext.touchPointCandleData.index],
+        lbValue: dnMap[candlesticksContext.touchPointCandleData.index],
       );
       if (mounted) {
         setState(() {

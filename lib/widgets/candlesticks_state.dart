@@ -46,7 +46,7 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
     }
 
     ///修复在durationMs时间内出现多个不同的时点
-    if(candleData.timeMs % this.durationMs != 0){
+    if(candleData.timeMs % this.durationMs != 0 && this.durationMs <= 10080 * 1000 * 60){
       candleData = CandleData(
           timeMs: ((candleData.timeMs ~/ this.durationMs + 1) * this.durationMs).toInt(),
           open: candleData.open,
@@ -127,6 +127,10 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
   }
 
   void onHorizontalDragEnd(DragEndDetails details) {
+    if(candleDataList.length <= widget.candlesticksStyle.defaultViewPortX){
+      return;
+    }
+
     touching = false;
     //区间的最大值， 最小值。
     if (uiCameraAnimation == null) {
@@ -172,6 +176,9 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
   }
 
   void onHorizontalDragUpdate(DragUpdateDetails details) {
+    if(candleDataList.length <= widget.candlesticksStyle.defaultViewPortX){
+      return;
+    }
     if (uiCameraAnimation == null) { //还没有初始化完成。
       return;
     }
@@ -213,6 +220,9 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
   Offset startPosition;
 
   void handleScaleStart(ScaleStartDetails details) {
+    if(candleDataList.length <= widget.candlesticksStyle.defaultViewPortX){
+      return;
+    }
     startPosition = details.focalPoint;
     startRangeX = uiCameraAnimation.value;
 
@@ -225,6 +235,9 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
 
 
   onScaleUpdate(ScaleUpdateDetails details) {
+    if(candleDataList.length <= widget.candlesticksStyle.defaultViewPortX){
+      return;
+    }
     double scale = 1 / details.scale;
     /*
     var width = originWidth * scale;
