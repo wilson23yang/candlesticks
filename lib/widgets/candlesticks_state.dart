@@ -19,6 +19,7 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
   bool touching = false;
   List<ExtCandleData> candleDataList = List<ExtCandleData>(); //这个可以优化掉。
   bool isShowingEmptyPage = false;
+  DragType dragType = DragType.none;
 
   CandlesticksState({Stream<CandleData> dataStream})
       : super();
@@ -127,6 +128,14 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
   }
 
   void onHorizontalDragEnd(DragEndDetails details) {
+    if(dragType == DragType.kline){
+      onHorizontalDragKlineEnd(details);
+    } else if(dragType == DragType.floatView){
+      onHorizontalDragFloatViewEnd(details);
+    }
+  }
+
+  void onHorizontalDragKlineEnd(DragEndDetails details){
     if(candleDataList.length <= widget.candlesticksStyle.defaultViewPortX){
       return;
     }
@@ -175,7 +184,21 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
     uiCameraAnimationController.forward();
   }
 
+  void onHorizontalDragFloatViewEnd(DragEndDetails details){
+
+  }
+
   void onHorizontalDragUpdate(DragUpdateDetails details) {
+    if(dragType == DragType.kline){
+      onHorizontalDragKlineUpdate(details);
+      return;
+    } else if(dragType == DragType.floatView){
+      onHorizontalDragFloatLineUpdate(details);
+      return;
+    }
+  }
+
+  void onHorizontalDragKlineUpdate(DragUpdateDetails details){
     if(candleDataList.length <= widget.candlesticksStyle.defaultViewPortX){
       return;
     }
@@ -214,6 +237,27 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
 
     });
   }
+
+  void onHorizontalDragFloatLineUpdate(DragUpdateDetails details){
+    RenderBox getBox = context.findRenderObject();
+    var currentRangeX = uiCameraAnimation.value;
+    touchPoint = getBox.globalToLocal(details.globalPosition);
+
+    var worldX = currentRangeX.minX +
+        (touchPoint.dx / context.size.width) * currentRangeX.width;
+    var extDataIndex = (worldX - candlesX.first) ~/ durationMs;
+    if (extDataIndex < 0) {
+      return;
+    }
+    if (extDataIndex >= this.candleDataList.length) {
+      return;
+    }
+    extCandleData = candleDataList[extDataIndex];
+    setState(() {
+
+    });
+  }
+
 
   double startX;
   AABBRangeX startRangeX;
@@ -306,7 +350,18 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
 
   onTapDown(TapDownDetails details) {
     RenderBox getBox = context.findRenderObject();
-    touchPoint = getBox.globalToLocal(details.globalPosition);
+    if(touchPoint != null){
+      Offset tempTouchPoint = getBox.globalToLocal(details.globalPosition);
+      if((tempTouchPoint.dx - touchPoint.dx).abs() < 10){
+        dragType = DragType.floatView;
+      } else {
+        dragType = DragType.kline;
+      }
+      touchPoint = tempTouchPoint;
+    } else {
+      dragType = DragType.kline;
+      touchPoint = getBox.globalToLocal(details.globalPosition);
+    }
   }
 
   onLongPress() {
@@ -353,4 +408,8 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
 
     super.dispose(); //删除监听器
   }
+}
+
+enum DragType{
+  none,kline,floatView
 }

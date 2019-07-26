@@ -16,6 +16,11 @@ class CandleData {
         this.volume,
     });
 
+    CandleData.fromArray2(final List<dynamic> item) :
+        timeMs = item[0],
+        open = item[1],
+        high = item[2],low = item[3],close=item[4],volume=item[5];
+
     CandleData.fromArray(final List<dynamic> item) :
             timeMs = int.parse(item[0]),
             open = double.parse(item[1]),

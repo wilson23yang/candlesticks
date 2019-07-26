@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     //dataStreamFuture = DataSource.instance.initRBTC(1440);
-    dataStreamFuture = DataSource.instance.initRBTC(1);
+    dataStreamFuture = DataSource.instance.initRBTC2(1);
     style = DefaultCandleStyle;
   }
 

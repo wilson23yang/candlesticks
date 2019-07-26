@@ -5,9 +5,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:candlesticks/candlesticks.dart';
 
 class DataSource {
-
-  static final DataSource instance = new DataSource
-      ._internal();
+  static final DataSource instance = new DataSource._internal();
 
   factory DataSource() {
     return instance;
@@ -20,19 +18,18 @@ class DataSource {
   DataSource._internal();
 
   Future<Stream<CandleData>> initTZB(int minute) async {
-    if(subject != null) {
+    if (subject != null) {
       subject.close();
       subject = null;
     }
     subject = ReplaySubject<CandleData>();
     var symbol = "eth_usdt";
-    if(channel != null) {
+    if (channel != null) {
       channel.sink.close();
       channel = null;
     }
 
-    channel = IOWebSocketChannel.connect(
-        "wss://ws.tokenbinary.io/sub");
+    channel = IOWebSocketChannel.connect("wss://ws.tokenbinary.io/sub");
     /*
         channel.sink.add(
             '{"method":"pull_heart","data":{"time":"1541066934853"}}');
@@ -44,11 +41,8 @@ class DataSource {
 
     channel.stream.listen((request) {
       var msg = json.decode(utf8.decode(request));
-      int now = DateTime
-          .now()
-          .millisecond;
-      channel.sink.add(
-          '{"method":"pull_heart","data":{"time":"${now}"}}');
+      int now = DateTime.now().millisecond;
+      channel.sink.add('{"method":"pull_heart","data":{"time":"${now}"}}');
       if (msg['method'] == 'push_gamble_kline_graph') {
         //print(msg['data']);
         List dataK = [];
@@ -74,7 +68,7 @@ class DataSource {
   }
 
   Future<Stream<CandleData>> initRBTC(int minute) async {
-    if(subject != null) {
+    if (subject != null) {
       subject.close();
     }
     subject = ReplaySubject<CandleData>();
@@ -121,6 +115,61 @@ class DataSource {
 //                channel.sink.close(5678, "raisin");
       }
     });
+    return subject.stream;
+  }
+
+
+  Future<Stream<CandleData>> initRBTC2(int minute) async {
+    if (subject != null) {
+      subject.close();
+    }
+    subject = ReplaySubject<CandleData>();
+
+    for (int i = 0; i < 100; i++) {
+      List<dynamic> item = <dynamic>[];
+      try {
+        int time = 1564028824000 + 60000 * i;
+        item.add(time);
+        switch (i % 5) {
+          case 0:
+            item.add(20.0*i);
+            item.add(22.0*i);
+            item.add(18.0*i);
+            item.add(21.0*i);
+            break;
+          case 1:
+            item.add(21.0*i);
+            item.add(24.0*i);
+            item.add(20.3*i);
+            item.add(22.0*i);
+            break;
+          case 2:
+            item.add(22.5*i);
+            item.add(23.0*i);
+            item.add(22.0*i);
+            item.add(23.0*i);
+            break;
+          case 3:
+            item.add(23.0*i);
+            item.add(23.0*i);
+            item.add(19.0*i);
+            item.add(19.0*i);
+            break;
+          case 4:
+            item.add(19.0*i);
+            item.add(21.5*i);
+            item.add(18.0*i);
+            item.add(21.0*i);
+            break;
+        }
+        double volume = 50.0 * (i + 1);
+        item.add(volume);
+        subject.sink.add(CandleData.fromArray2(item));
+      } catch (e) {
+        print(e);
+      }
+    }
+
     return subject.stream;
   }
 }
