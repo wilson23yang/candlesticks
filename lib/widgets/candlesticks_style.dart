@@ -8,6 +8,8 @@ import 'package:candlesticks/widgets/ma/ma_style.dart';
 import 'package:candlesticks/widgets/candles/candles_style.dart';
 import 'package:candlesticks/widgets/floating/floating_style.dart';
 
+import 'floating/horizontal_line_floating_style.dart';
+
 CandlesticksStyle DefaultDarkCandleStyle = CandlesticksStyle(
   backgroundColor: Color(0xFF060827),
   cameraDuration: Duration(milliseconds: 500),
@@ -47,6 +49,7 @@ CandlesticksStyle DefaultDarkCandleStyle = CandlesticksStyle(
   wrStyle: defaultWrStyle,
   kdjStyle: defaultKdjStyle,
   macdStyle: defaultMacdStyle,
+  hlfStyle: defaultHLFStyle,
 
 );
 
@@ -89,6 +92,7 @@ CandlesticksStyle DefaultLightCandleStyle = CandlesticksStyle(
   wrStyle: defaultWrStyle,
   kdjStyle: defaultKdjStyle,
   macdStyle: defaultMacdStyle,
+  hlfStyle: defaultHLFStyle,
 );
 
 class CandlesticksStyle {
@@ -114,6 +118,7 @@ class CandlesticksStyle {
   final WrStyle wrStyle;
   final KdjStyle kdjStyle;
   final MacdStyle macdStyle;
+  final HorizontalLineFloatingStyle hlfStyle;
 
   final double middleHeight;
   final double bottomHeight;
@@ -129,6 +134,7 @@ class CandlesticksStyle {
     this.wrStyle,
     this.kdjStyle,
     this.macdStyle,
+    this.hlfStyle,
     this.cameraDuration,
     this.initAfterNData,
     this.backgroundColor,

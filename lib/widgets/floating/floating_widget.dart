@@ -141,15 +141,16 @@ class TopFloatingPainter extends CustomPainter {
 //    canvas.drawLine(
 //        Offset(touchScenePoint.dx, 0), Offset(touchScenePoint.dx, size.height),
 //        crossPainter);
-    canvas.drawLine(Offset(0, realTouchPoint.dy), Offset(size.width, realTouchPoint.dy),
-        crossPainter);
+//    canvas.drawLine(Offset(0, realTouchPoint.dy), Offset(size.width, realTouchPoint.dy),
+//        crossPainter);
     Paint maxCircle = new Paint();
     maxCircle
-      ..shader = ui.Gradient.radial(realTouchPoint, 5, [
-        Colors.white.withOpacity(0.8),
+      ..shader = ui.Gradient.radial(realTouchPoint, 100, [
+        Colors.white.withOpacity(0.26),
         Colors.white.withOpacity(0.1),
       ], [0.0, 1.0], TileMode.clamp);
-    canvas.drawCircle(realTouchPoint, 5, maxCircle);
+    canvas.drawCircle(realTouchPoint, 12, maxCircle);
+    canvas.drawCircle(realTouchPoint, 2.6, new Paint()..color=Colors.white);
   }
 
   @override

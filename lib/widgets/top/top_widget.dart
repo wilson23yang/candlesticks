@@ -1,6 +1,7 @@
 import 'package:candlesticks/widgets/boll/boll_value_widget.dart';
 import 'package:candlesticks/widgets/boll/boll_value_widget.dart';
 import 'package:candlesticks/widgets/boll/boll_view.dart';
+import 'package:candlesticks/widgets/floating/horizontal_line_floating_widget.dart';
 import 'package:candlesticks/widgets/indicator_switch.dart';
 import 'package:candlesticks/widgets/ma/ma_value_widget.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +75,14 @@ class TopWidget extends StatelessWidget {
                       style: widget.candlesticksStyle,
                       type: Type.price,
                     ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: HorizontalLineFloatingWidget(
+                    style: widget.candlesticksStyle,
+                    extCandleData: candlesticksContext.touchPointCandleData,
+                    touchPoint: candlesticksContext.touchPoint,
+                    durationMs: widget.durationMs,
                   ),
                 ),
                 Positioned.fill(
