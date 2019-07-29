@@ -49,6 +49,8 @@ class CandlesticksView extends CandlesticksState {
       onTapUp: onTapUp,
       onLongPress: onLongPress,
 
+      onLongPressMoveUpdate: onLongPressMoveUpdate,
+
       child: AnimatedBuilder(
           animation: Listenable.merge([
             uiCameraAnimation,
