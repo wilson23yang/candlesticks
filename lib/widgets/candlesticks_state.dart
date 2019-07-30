@@ -130,7 +130,7 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
   }
 
   void onHorizontalDragEnd(DragEndDetails details) {
-    if (dragType == DragType.kline) {
+    if (dragType == DragType.kline || dragType == DragType.none) {
       onHorizontalDragKlineEnd(details);
     } else if (dragType == DragType.floatView) {
       onHorizontalDragFloatViewEnd(details);
