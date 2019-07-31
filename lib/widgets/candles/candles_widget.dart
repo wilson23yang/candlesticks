@@ -1,3 +1,4 @@
+import 'package:candlesticks/widgets/candles/candles_value_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:candlesticks/2d/uiobjects/uio_candle.dart';
 import 'package:candlesticks/2d/candle_data.dart';
@@ -86,18 +87,18 @@ class CandlesWidgetState extends State<CandlesWidget> {
                   style: widget.style,
                 ),
           )),
-//          Positioned.fill(
-//            child: CandlesValueWidget(
-//              point: aabbContext.minPoint,
-//              style: widget.style,
-//            ),
-//          ),
-//          Positioned.fill(
-//            child: CandlesValueWidget(
-//              style: widget.style,
-//              point: aabbContext.maxPoint,
-//            ),
-//          )
+          Positioned.fill(
+            child: CandlesValueWidget(
+              point: aabbContext.minPoint,
+              style: widget.style,
+            ),
+          ),
+          Positioned.fill(
+            child: CandlesValueWidget(
+              style: widget.style,
+              point: aabbContext.maxPoint,
+            ),
+          )
         ]);
   }
 

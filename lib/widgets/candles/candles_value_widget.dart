@@ -1,15 +1,10 @@
+import 'package:candlesticks/utils/string_util.dart';
 import 'package:flutter/material.dart';
-
 import 'dart:ui' as ui;
-import 'package:candlesticks/widgets/aabb/aabb_range.dart';
 import 'package:candlesticks/widgets/aabb/aabb_context.dart';
 import 'package:candlesticks/2d/uicamera.dart';
 import 'package:candlesticks/2d/uiobjects/uio_point.dart';
 import 'package:candlesticks/widgets/candlesticks_style.dart';
-import 'package:candlesticks/widgets/ma/ma_style.dart';
-import 'package:candlesticks/widgets/ma/ma_context.dart';
-import 'package:candlesticks/widgets/ma/ma_value_widget.dart';
-import 'package:candlesticks/widgets/ma/ma_value_data.dart';
 
 class CandlesValuePainter extends CustomPainter {
 
@@ -33,7 +28,9 @@ class CandlesValuePainter extends CustomPainter {
       dir = -1;
     }
     Offset pText = p + Offset(dx, 0) * dir;
-    String price = point.y.toStringAsFixed(style.fractionDigits);
+//    String price = point.y.toStringAsFixed(style.fractionDigits);
+    String price = StringUtil.formatAssetNum(point.y.toString(),
+        StringUtil.getPrecision(point.y));
 
 
     TextPainter currentTextPainter = TextPainter(
@@ -41,7 +38,7 @@ class CandlesValuePainter extends CustomPainter {
         maxLines: 1,
         textAlign: TextAlign.end,
         text: TextSpan(
-          text: "${price}",
+          text: "$price",
           style: TextStyle(
             color: Colors.white,
             fontSize: 10.0,
