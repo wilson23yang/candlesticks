@@ -38,6 +38,95 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Column(children: <Widget>[
+          Row(
+            children: <Widget>[
+              GestureDetector(
+                onTap: (){
+                  setMainSwitch(false);
+                  setState(() {});
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('HIDE'),
+                ),
+              ),
+              GestureDetector(
+                onTap: (){
+                  setMaSwitch(true);
+                  setState(() {});
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('MA'),
+                ),
+              ),
+              GestureDetector(
+                onTap: (){
+                  setBollSwitch(true);
+                  setState(() {});
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('BOLL'),
+                ),
+              ),
+
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              GestureDetector(
+                onTap: (){
+                  setSubSwitch(false);
+                  setState(() {});
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('HIDE',),
+                ),
+              ),
+              GestureDetector(
+                onTap: (){
+                  setMacdSwitch(true);
+                  setState(() {});
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('MACD'),
+                ),
+              ),
+              GestureDetector(
+                onTap: (){
+                  setRsiSwitch(true);
+                  setState(() {});
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('RSI'),
+                ),
+              ),
+              GestureDetector(
+                onTap: (){
+                  setKdjSwitch(true);
+                  setState(() {});
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('KDJ'),
+                ),
+              ),
+              GestureDetector(
+                onTap: (){
+                  setWrSwitch(true);
+                  setState(() {});
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('WR'),
+                ),
+              ),
+            ],
+          ),
           Expanded(
               flex: 1,
               child: Row(children: <Widget>[

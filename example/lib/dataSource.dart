@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:web_socket_channel/io.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -130,12 +132,12 @@ class DataSource {
       try {
         int time = 1564028824000 + 60000 * i;
         item.add(time);
-        switch (i % 5) {
+        switch (i % 8) {
           case 0:
-            item.add(20.0*i);
-            item.add(22.0*i);
-            item.add(18.0*i);
-            item.add(21.0*i);
+            item.add(20.0*i);//open
+            item.add(22.0*i);//high
+            item.add(18.0*i);//low
+            item.add(21.0*i);//close
             break;
           case 1:
             item.add(21.0*i);
@@ -157,12 +159,31 @@ class DataSource {
             break;
           case 4:
             item.add(19.0*i);
-            item.add(21.5*i);
+            item.add(19.9*i);
+            item.add(17.0*i);
             item.add(18.0*i);
-            item.add(21.0*i);
+            break;
+          case 5:
+            item.add(18.0*i);
+            item.add(19.9*i);
+            item.add(15.0*i);
+            item.add(17.0*i);
+            break;
+          case 6:
+            item.add(17.0*i);
+            item.add(17.9*i);
+            item.add(15.0*i);
+            item.add(16.0*i);
+            break;
+          case 7:
+            item.add(16.0*i);
+            item.add(20.9*i);
+            item.add(15.0*i);
+            item.add(20.0*i);
             break;
         }
-        double volume = 50.0 * (i + 1);
+
+        double volume = 50.0 * (Random().nextInt(9));
         item.add(volume);
         subject.sink.add(CandleData.fromArray2(item));
       } catch (e) {
