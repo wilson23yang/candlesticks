@@ -138,7 +138,7 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
   }
 
   void onHorizontalDragKlineEnd(DragEndDetails details) {
-    if (candleDataList.length <= widget.candlesticksStyle.defaultViewPortX) {
+    if (candleDataList.length <= currentViewPortX) {
       return;
     }
 
@@ -205,7 +205,7 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
   }
 
   void onHorizontalDragKlineUpdate(DragUpdateDetails details) {
-    if (candleDataList.length <= widget.candlesticksStyle.defaultViewPortX) {
+    if (candleDataList.length <= currentViewPortX) {
       return;
     }
     if (uiCameraAnimation == null) { //还没有初始化完成。
@@ -269,11 +269,9 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
   double startX;
   AABBRangeX startRangeX;
   Offset startPosition;
+  int currentViewPortX;
 
   void handleScaleStart(ScaleStartDetails details) {
-    if (candleDataList.length <= widget.candlesticksStyle.defaultViewPortX) {
-      return;
-    }
     startPosition = details.focalPoint;
     startRangeX = uiCameraAnimation.value;
 
@@ -286,10 +284,8 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
 
 
   onScaleUpdate(ScaleUpdateDetails details) {
-    if (candleDataList.length <= widget.candlesticksStyle.defaultViewPortX) {
-      return;
-    }
     double scale = 1 / details.scale;
+
     /*
     var width = originWidth * scale;
     if (width > this.durationMs * widget.candlesticksStyle.maxViewPortX) {
@@ -306,6 +302,7 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
     if (width > durationMs * this.widget.candlesticksStyle.maxViewPortX) {
       width = durationMs * this.widget.candlesticksStyle.maxViewPortX;
     }
+    currentViewPortX = width ~/ durationMs;
 
     var dx = (startX - startRangeX.minX) * scale;
 
@@ -421,6 +418,7 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
         duration: widget.candlesticksStyle.cameraDuration, vsync: this);
     extCandleData = null;
     touchPoint = null;
+    currentViewPortX = widget.candlesticksStyle.defaultViewPortX;
   }
 
   @override
