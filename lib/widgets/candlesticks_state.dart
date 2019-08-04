@@ -33,7 +33,8 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
       return;
     }
     if (candleDataList.length > 0) {
-      if (candleData.timeMs - candleDataList.last.timeMs > this.durationMs) {
+      if (candleData.timeMs - candleDataList.last.timeMs > this.durationMs
+      && this.durationMs < 259200000) {
         CandleData t = CandleData(
             timeMs: (candleData.timeMs - this.durationMs).toInt(),
             open: candleDataList.last.close,
@@ -88,7 +89,7 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
   onCandleData(CandleData candleData) {
     if (firstCandleData == null) {
       firstCandleData = candleData;
-      return;
+      //return;
     }
 
     if (this.durationMs == null) {
