@@ -18,6 +18,7 @@ CandlesticksStyle DefaultCandleStyle = DefaultDarkCandleStyle;
 
 class _MyAppState extends State<MyApp> {
   int count = 0;
+  double durationMs = 60000;
 
   @override
   void initState() {
@@ -38,6 +39,32 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Column(children: <Widget>[
+          Row(
+            children: <Widget>[
+              GestureDetector(
+                onTap: (){
+                  durationMs = 60000;
+                  dataStreamFuture = DataSource.instance.initRBTC2(1);
+                  setState(() {});
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('数据源1分钟'),
+                ),
+              ),
+              GestureDetector(
+                onTap: (){
+                  durationMs = 60000 * 60 * 24 * 30.0;
+                  dataStreamFuture = DataSource.instance.initRBTC3(1);
+                  setState(() {});
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('数据源1月'),
+                ),
+              ),
+            ],
+          ),
           Row(
             children: <Widget>[
               GestureDetector(
@@ -167,8 +194,7 @@ class _MyAppState extends State<MyApp> {
                     return Container();
                   }
                   return CandlesticksWidget(
-//                    durationMs: 86400000,
-                    durationMs: 60000,
+                    durationMs: durationMs,
                     dataStream: snapshot.data,
                     candlesticksStyle:style,
                   );

@@ -127,10 +127,12 @@ class DataSource {
     }
     subject = ReplaySubject<CandleData>();
 
-    for (int i = 0; i < 100; i++) {
+    int lastTime = 0;
+    for (int i = 1; i <= 100; i++) {
       List<dynamic> item = <dynamic>[];
       try {
         int time = 1564028824000 + 60000 * i;
+        lastTime = time;
         item.add(time);
         switch (i % 8) {
           case 0:
@@ -190,6 +192,147 @@ class DataSource {
         print(e);
       }
     }
+//    int count = 0;
+//    Timer.periodic(Duration(seconds: 1), (Timer timer){
+//      count++;
+//      if(count % 60 == 0){
+//        lastTime = lastTime + 60000;
+//      }
+//      List<dynamic> item = <dynamic>[];
+//      item.add(lastTime);
+//      item.add(16.0*100 +  10 * Random().nextInt(9));
+//      item.add(20.9*100 +  10 * Random().nextInt(9));
+//      item.add(15.0*100 +  10 * Random().nextInt(9));
+//      item.add(20.0*100 +  10 * Random().nextInt(9));
+//      double volume = 50.0 * (Random().nextInt(9));
+//      item.add(volume);
+//      subject.sink.add(CandleData.fromArray2(item));
+//    });
+
+    return subject.stream;
+  }
+
+  Future<Stream<CandleData>> initRBTC3(int minute) async {
+    if (subject != null) {
+      subject.close();
+    }
+    subject = ReplaySubject<CandleData>();
+
+    int i = 1;
+    List<dynamic> item = <dynamic>[];
+
+    item.add(1533052800000);//2018-08-01 00:00:00
+    item.add(20.0*i);//open
+    item.add(22.0*i);//high
+    item.add(19.5*i);//low
+    item.add(21.0*i);//close
+    item.add(50.0 * (Random().nextInt(9)));
+    subject.sink.add(CandleData.fromArray2(item));
+    item.clear();
+
+
+    item.add(1535731200000);//2018-09-01 00:00:00
+    item.add(21.0*i);
+    item.add(22.5*i);
+    item.add(20.3*i);
+    item.add(22.0*i);
+    item.add(50.0 * (Random().nextInt(9)));
+    subject.sink.add(CandleData.fromArray2(item));
+    item.clear();
+
+
+    item.add(1538323200000);//2018-10-01 00:00:00
+    item.add(22.5*i);
+    item.add(23.3*i);
+    item.add(22.0*i);
+    item.add(23.0*i);
+    item.add(50.0 * (Random().nextInt(9)));
+    subject.sink.add(CandleData.fromArray2(item));
+    item.clear();
+
+
+    item.add(1541001600000);//2018-11-01 00:00:00
+    item.add(23.0*i);
+    item.add(23.0*i);
+    item.add(19.0*i);
+    item.add(19.0*i);
+    item.add(50.0 * (Random().nextInt(9)));
+    subject.sink.add(CandleData.fromArray2(item));
+    item.clear();
+
+
+    item.add(1543593600000);//2018-12-01 00:00:00
+    item.add(19.0*i);
+    item.add(19.9*i);
+    item.add(17.0*i);
+    item.add(18.0*i);
+    item.add(50.0 * (Random().nextInt(9)));
+    subject.sink.add(CandleData.fromArray2(item));
+    item.clear();
+
+    item.add(1546272000000);//2019-01-01 00:00:00
+    item.add(18.0*i);
+    item.add(18.9*i);
+    item.add(16.8*i);
+    item.add(17.0*i);
+    item.add(50.0 * (Random().nextInt(9)));
+    subject.sink.add(CandleData.fromArray2(item));
+    item.clear();
+
+
+    item.add(1548950400000);//2019-02-01 00:00:00
+    item.add(17.0*i);
+    item.add(17.9*i);
+    item.add(15.9*i);
+    item.add(16.0*i);
+    item.add(50.0 * (Random().nextInt(9)));
+    subject.sink.add(CandleData.fromArray2(item));
+    item.clear();
+
+    item.add(1551369600000);//2019-03-01 00:00:00
+    item.add(16.0*i);
+    item.add(20.2*i);
+    item.add(15.5*i);
+    item.add(20.0*i);
+    item.add(50.0 * (Random().nextInt(9)));
+    subject.sink.add(CandleData.fromArray2(item));
+    item.clear();
+
+    item.add(1554048000000);//2019-04-01 00:00:00
+    item.add(20.0*i);
+    item.add(21.0*i);
+    item.add(18.0*i);
+    item.add(19.0*i);
+    item.add(50.0 * (Random().nextInt(9)));
+    subject.sink.add(CandleData.fromArray2(item));
+    item.clear();
+
+    item.add(1556640000000);//2019-05-01 00:00:00
+    item.add(18.3*i);
+    item.add(19.0*i);
+    item.add(17.0*i);
+    item.add(17.0*i);
+    item.add(50.0 * (Random().nextInt(9)));
+    subject.sink.add(CandleData.fromArray2(item));
+    item.clear();
+
+    item.add(1559318400000);//2019-06-01 00:00:00
+    item.add(17.0*i);
+    item.add(17.8*i);
+    item.add(16.9*i);
+    item.add(16.9*i);
+    item.add(50.0 * (Random().nextInt(9)));
+    subject.sink.add(CandleData.fromArray2(item));
+    item.clear();
+
+    item.add(1561910400000);//2019-07-01 00:00:00
+    item.add(16.6*i);
+    item.add(17.0*i);
+    item.add(16.9*i);
+    item.add(16.9*i);
+    item.add(50.0 * (Random().nextInt(9)));
+    subject.sink.add(CandleData.fromArray2(item));
+    item.clear();
 
     return subject.stream;
   }
