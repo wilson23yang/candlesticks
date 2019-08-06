@@ -226,10 +226,9 @@ class DataSource {
         item.add(open);
         item.add(high);
         item.add(low);
-        item.add(close);
+        item.add(double.parse(close.toStringAsFixed(4)));
         item.add(volume);
       }
-      print('open:${item[2]}.....close:${item[4]}......volume:${item[5]}');
       preItem = item;
       subject.sink.add(CandleData.fromArray2(item));
     });
