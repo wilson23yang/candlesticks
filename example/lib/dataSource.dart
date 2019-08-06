@@ -121,6 +121,7 @@ class DataSource {
   }
 
 
+  Timer timer;
   Future<Stream<CandleData>> initRBTC2(int minute) async {
     if (subject != null) {
       subject.close();
@@ -128,6 +129,7 @@ class DataSource {
     subject = ReplaySubject<CandleData>();
 
     int lastTime = 0;
+    List<dynamic> preItem;
     for (int i = 1; i <= 100; i++) {
       List<dynamic> item = <dynamic>[];
       try {
@@ -187,29 +189,55 @@ class DataSource {
 
         double volume = 50.0 * (Random().nextInt(9));
         item.add(volume);
+        preItem = item;
         subject.sink.add(CandleData.fromArray2(item));
       } catch (e) {
         print(e);
       }
     }
-//    int count = 0;
-//    Timer.periodic(Duration(seconds: 1), (Timer timer){
-//      count++;
-//      if(count % 60 == 0){
-//        lastTime = lastTime + 60000;
-//      }
-//      List<dynamic> item = <dynamic>[];
-//      item.add(lastTime);
-//      item.add(16.0*100 +  10 * Random().nextInt(9));
-//      item.add(20.9*100 +  10 * Random().nextInt(9));
-//      item.add(15.0*100 +  10 * Random().nextInt(9));
-//      item.add(20.0*100 +  10 * Random().nextInt(9));
-//      double volume = 50.0 * (Random().nextInt(9));
-//      item.add(volume);
-//      subject.sink.add(CandleData.fromArray2(item));
-//    });
+    int count = 0;
+    int currentItemTime = preItem[0];
+    timer = Timer.periodic(Duration(seconds: 1), (Timer timer){
+      if(count % 10 == 0){
+        currentItemTime = currentItemTime + 60000;
+      }
+      count++;
 
+      List<dynamic> item = <dynamic>[];
+      if(currentItemTime != preItem[0]){
+        item.add(currentItemTime);
+        double open = preItem[4];
+        double close = open;
+        double high = open;
+        double low = open;
+        double volume = 0;
+        item.add(open);
+        item.add(high);
+        item.add(low);
+        item.add(close);
+        item.add(volume);
+      } else {
+        item.add(currentItemTime);
+        double open = preItem[1];
+        double close = open + (open * 0.1 * Random().nextDouble() - open * 0.05);
+        double high = max(max(open, close), preItem[2]);
+        double low = min(min(open,close),preItem[3]);
+        double volume = preItem[5] + 10 * Random().nextDouble();
+        item.add(open);
+        item.add(high);
+        item.add(low);
+        item.add(close);
+        item.add(volume);
+      }
+      print('open:${item[2]}.....close:${item[4]}......volume:${item[5]}');
+      preItem = item;
+      subject.sink.add(CandleData.fromArray2(item));
+    });
     return subject.stream;
+  }
+  
+  void stopTimer(){
+    timer?.cancel();
   }
 
   Future<Stream<CandleData>> initRBTC3(int minute) async {

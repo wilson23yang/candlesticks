@@ -44,6 +44,7 @@ class _MyAppState extends State<MyApp> {
               GestureDetector(
                 onTap: (){
                   durationMs = 60000;
+                  DataSource.instance.stopTimer();
                   dataStreamFuture = DataSource.instance.initRBTC2(1);
                   setState(() {});
                 },
@@ -55,6 +56,7 @@ class _MyAppState extends State<MyApp> {
               GestureDetector(
                 onTap: (){
                   durationMs = 60000 * 60 * 24 * 30.0;
+                  DataSource.instance.stopTimer();
                   dataStreamFuture = DataSource.instance.initRBTC3(1);
                   setState(() {});
                 },
