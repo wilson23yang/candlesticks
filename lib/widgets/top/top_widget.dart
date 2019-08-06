@@ -2,6 +2,8 @@ import 'package:candlesticks/widgets/boll/boll_value_widget.dart';
 import 'package:candlesticks/widgets/boll/boll_value_widget.dart';
 import 'package:candlesticks/widgets/boll/boll_view.dart';
 import 'package:candlesticks/widgets/floating/horizontal_line_floating_widget.dart';
+import 'package:candlesticks/widgets/floating/kline_last_point_floating_widget.dart';
+import 'package:candlesticks/widgets/floating/last_point_floating_widget.dart';
 import 'package:candlesticks/widgets/indicator_switch.dart';
 import 'package:candlesticks/widgets/ma/ma_value_widget.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +56,13 @@ class TopWidget extends StatelessWidget {
                       dataStream: widget.extDataStream,
                       style: widget.candlesticksStyle,
                     )
+                ),
+                Positioned.fill(
+                  child: KLineLastPointFloatingWidget(
+                    style: candlesticksStyle,
+                    durationMs: widget.durationMs,
+                    lastCandleData: candlesticksContext.lastCandleData,
+                  ),
                 ),
                 Positioned.fill(
                   child: Visibility(

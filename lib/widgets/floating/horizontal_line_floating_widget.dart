@@ -9,6 +9,9 @@ import 'package:candlesticks/widgets/aabb/aabb_context.dart';
 import 'package:candlesticks/widgets/candlesticks_style.dart';
 import 'dart:ui' as ui;
 
+///
+///K线长按查看选择点处的水平浮标线
+///
 class HorizontalLineFloatingPainter extends CustomPainter {
   final ExtCandleData extCandleData;
   final UICamera uiCamera;

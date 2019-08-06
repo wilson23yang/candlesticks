@@ -109,9 +109,7 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
           Tween(begin: rangeX, end: rangeX).animate(
               uiCameraAnimationController);
       uiCameraAnimationController.reset();
-      setState(() {
-
-      });
+      setState(() {});
     } else if ((!touching) && (!this.uiCameraAnimationController.isAnimating) && !dragMiddleStatus) {
       var currentRangeX = this.uiCameraAnimation.value;
       if ((currentRangeX.minX <= candlesX.last) &&
@@ -131,8 +129,8 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
             Tween(begin: rangeX, end: rangeX).animate(
                 uiCameraAnimationController);
         uiCameraAnimationController.reset();
-        setState(() {});
       }
+      setState(() {});
     } else if(dragMiddleStatus){
       setState(() {});
     }
