@@ -34,7 +34,7 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
     }
     if (candleDataList.length > 0) {
       if (candleData.timeMs - candleDataList.last.timeMs > this.durationMs
-      && this.durationMs < 259200000) {
+          && this.durationMs < 259200000) {
         CandleData t = CandleData(
             timeMs: (candleData.timeMs - this.durationMs).toInt(),
             open: candleDataList.last.close,
@@ -112,22 +112,31 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
       setState(() {
 
       });
-    } else if ((!touching) && (!this.uiCameraAnimationController.isAnimating)) {
+    } else if ((!touching) && (!this.uiCameraAnimationController.isAnimating) && !dragMiddleStatus) {
       var currentRangeX = this.uiCameraAnimation.value;
       if ((currentRangeX.minX <= candlesX.last) &&
           (candlesX.last <= currentRangeX.maxX + durationMs * 2)) {
-        var maxX = candlesX.last + durationMs;
+        double rightMargin = 0;
+        if((candlesX.last + durationMs - (candlesX.first - durationMs)) >= currentRangeX.width * 4.0 / 5.0){
+          rightMargin = currentRangeX.width / 5.0;
+        } else {
+          rightMargin = currentRangeX.width - (candlesX.last - candlesX.first + durationMs);
+        }
+
+        var maxX = candlesX.last + durationMs + rightMargin;
         var minX = maxX - currentRangeX.width;
+
         var rangeX = AABBRangeX(minX, maxX);
         uiCameraAnimation =
             Tween(begin: rangeX, end: rangeX).animate(
                 uiCameraAnimationController);
         uiCameraAnimationController.reset();
-        setState(() {
-
-        });
+        setState(() {});
       }
+    } else if(dragMiddleStatus){
+      setState(() {});
     }
+
   }
 
   void onHorizontalDragEnd(DragEndDetails details) {
@@ -137,6 +146,8 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
       onHorizontalDragFloatViewEnd(details);
     }
   }
+
+  bool dragMiddleStatus = false;
 
   void onHorizontalDragKlineEnd(DragEndDetails details) {
     if (candleDataList.length <= currentViewPortX) {
@@ -171,10 +182,16 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
     if (minX < this.candlesX.first) {
       minX = this.candlesX.first;
     }
-    if (minX > this.candlesX.last + durationMs - width) {
-      minX = this.candlesX.last + durationMs - width;
+    if (minX > this.candlesX.last + durationMs - width * 4.0 / 5.0) {
+      minX = this.candlesX.last + durationMs - width * 4.0 / 5.0;
     }
     double maxX = minX + width;
+    double dragMargin = maxX - candlesX.last - durationMs;
+    if(dragMargin > 0 && dragMargin < width / 5.0 || maxX < candlesX.last + durationMs){
+      dragMiddleStatus = true;
+    } else {
+      dragMiddleStatus = false;
+    }
 
     var newUICamera = AABBRangeX(minX, maxX);
     uiCameraAnimation =
@@ -317,6 +334,13 @@ abstract class CandlesticksState extends State<CandlesticksWidget>
       maxX = this.candlesX.last + this.durationMs;
       minX = maxX - width;
     }
+
+    if(this.candlesX.first - durationMs > minX){
+      double leftMargin = this.candlesX.first - durationMs - minX;
+      maxX = maxX + leftMargin;
+      minX = minX + leftMargin;
+    }
+
     var newRangeX = AABBRangeX(minX, maxX);
 
     uiCameraAnimation =
