@@ -75,7 +75,7 @@ class GraticulePainter extends CustomPainter {
     //五条线。
     // 绘制代码
     var beginY = size.height * paddingY;
-    var endY = size.height * (1 - paddingY);
+    var endY = size.height/* * (1 - paddingY)*/;
     var painter = Paint()
       ..style = PaintingStyle.stroke
       ..color = candlesticksStyle.lineColor;
