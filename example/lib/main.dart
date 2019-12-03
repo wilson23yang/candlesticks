@@ -99,6 +99,16 @@ class _MyAppState extends State<MyApp> {
                   child: Text('BOLL'),
                 ),
               ),
+              GestureDetector(
+                onTap: (){
+                  DataSource.instance.stopTimer();
+                  setState(() {});
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('STOP'),
+                ),
+              ),
 
             ],
           ),
@@ -156,35 +166,35 @@ class _MyAppState extends State<MyApp> {
               ),
             ],
           ),
-          Expanded(
-              flex: 1,
-              child: Row(children: <Widget>[
-                RaisedButton(
-                  onPressed: () {
-                    count++;
-                    if (count % 4 == 0) {
-                     // dataStreamFuture = DataSource.instance.initTZB(1);
-                      //print('切换K线 1');
-                    }
-                    if (count % 4 == 1) {
-                      //dataStreamFuture = DataSource.instance.initTZB(5);
-                      //print('切换K线 5');
-                    } else if (count % 4 == 2) {
-//                      dataStreamFuture = DataSource.instance.initTZB(5);
-                      print('切换颜色 红绿');
-                      style = DefaultCandleStyle;
-                    } else if (count % 4 == 3) {
-//                      dataStreamFuture = DataSource.instance.initTZB(5);
-                      print('切换颜色 绿红');
-                      DefaultCandleStyle.maStyle.shortColor = Colors.white;
-                      style = DefaultCandleStyle;
-                    }
-                    setState(() {
-
-                    });
-                  },
-                )
-              ])),
+//          Expanded(
+//              flex: 1,
+//              child: Row(children: <Widget>[
+//                RaisedButton(
+//                  onPressed: () {
+//                    count++;
+//                    if (count % 4 == 0) {
+//                     // dataStreamFuture = DataSource.instance.initTZB(1);
+//                      //print('切换K线 1');
+//                    }
+//                    if (count % 4 == 1) {
+//                      //dataStreamFuture = DataSource.instance.initTZB(5);
+//                      //print('切换K线 5');
+//                    } else if (count % 4 == 2) {
+////                      dataStreamFuture = DataSource.instance.initTZB(5);
+//                      print('切换颜色 红绿');
+//                      style = DefaultCandleStyle;
+//                    } else if (count % 4 == 3) {
+////                      dataStreamFuture = DataSource.instance.initTZB(5);
+//                      print('切换颜色 绿红');
+//                      DefaultCandleStyle.maStyle.shortColor = Colors.white;
+//                      style = DefaultCandleStyle;
+//                    }
+//                    setState(() {
+//
+//                    });
+//                  },
+//                )
+//              ])),
           Expanded(
             flex: 10,
             child: FutureBuilder<Stream<CandleData>>(

@@ -18,7 +18,7 @@ dev_dependencies:
   web_socket_channel:
   rxdart:
   candlesticks:
-    path: ../
+    path: ../../candlesticks
 
 
 # For information on the generic Dart part of this file, see the
